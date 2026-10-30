@@ -33,7 +33,7 @@ class SubscriptionFilesTest {
     @Test fun converts500LargeConfigsFromDiskWithoutCollectingTheArray() {
         val input = temporary.newFile("large.json")
         val output = temporary.newFile("converted.txt")
-        val padding = "a".repeat(128 * 1024)
+        val padding = "a".repeat(136 * 1024)
         input.bufferedWriter().use { writer ->
             writer.write("[")
             repeat(500) { i ->

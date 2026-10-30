@@ -131,7 +131,13 @@ class MainHook {
                             putExtra("pkg", context.packageName)
                             addFlags(0x01000000) // FLAG_RECEIVER_INCLUDE_BACKGROUND
                         }
-                        context.sendBroadcast(loadedIntent)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                            val options = android.app.BroadcastOptions.makeBasic()
+                                .setShareIdentityEnabled(true).toBundle()
+                            context.sendBroadcast(loadedIntent, null, options)
+                        } else {
+                            context.sendBroadcast(loadedIntent)
+                        }
                         Log.d(TAG, "Sent MODULE_LOADED for ${context.packageName}")
 
                         isInitialized = true
