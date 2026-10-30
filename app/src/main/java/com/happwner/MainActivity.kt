@@ -385,6 +385,7 @@ class MainActivity : AppCompatActivity() {
             chooser.setTitle(getString(R.string.output_format_title))
             chooser.setSingleChoiceItems(labels, formats.indexOf(SubscriptionFormat.read(prefs))) { dialog, index ->
                 SubscriptionFormat.save(prefs, formats[index])
+                SubscriptionFormat.save(prefs, formats[index], bridge = true)
                 updateOutputFormatButton()
                 dialog.dismiss()
                 reprocessCurrentSource()
@@ -819,6 +820,7 @@ class MainActivity : AppCompatActivity() {
                     sourceResponseFile = raw
                     sourceResponseUrl = urlString
                     sourceResponseHeaders = response.headers.filterKeys { it.equals("Encrypt-Tag", true) }
+                        .mapValues { it.value.take(1).map { value -> value.take(128) } }
                     val processed = processSubscriptionFile(raw, urlString, response.headers) { processedFile = it }
                     processedFile = processed.first
                     if (gen != fetchGeneration || inputUrl.text.toString().trim() != activeFetchUrl) return@launch
@@ -1414,7 +1416,7 @@ class MainActivity : AppCompatActivity() {
                     if (result.skipped > 0) notes += resources.getQuantityString(R.plurals.msg_xray_skipped, result.skipped, result.skipped)
                     file to notes.joinToString("\n").takeIf { it.isNotEmpty() }
                 } catch (e: CancellationException) { throw e }
-                catch (e: Exception) { raw to (getString(R.string.msg_file_raw_failed) + "\n" + (e.message ?: e.javaClass.simpleName)) }
+                catch (e: Exception) { raw to (getString(R.string.msg_file_raw_failed) + "\n" + (e.message ?: e.javaClass.simpleName).take(1024)) }
                 finally { plaintextFile?.delete() }
             }
         }

@@ -176,7 +176,8 @@ object DeviceProfiles {
         val hwid = value.trim()
         require(RequestIdentity.isValidHeaderValue(hwid)) { "Invalid HWID" }
         val current = active(context)
-        if (current != null) save(context, current.copy(hwid = hwid, sendHwid = hwid.isNotBlank()))
+        if (current != null) save(context, current.copy(hwid = hwid, sendHwid = hwid.isNotBlank(),
+            headers = current.headers.filterKeys { !it.equals(current.hwidHeader, true) }))
         else {
             PrefsManager.getSafePrefs(context).edit().putString("custom_hwid", hwid)
                 .putBoolean("use_custom_hwid_input", hwid.isNotBlank()).apply()

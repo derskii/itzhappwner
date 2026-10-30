@@ -103,4 +103,19 @@ class SubscriptionOutputTest {
         assertEquals("xtls-rprx-vision", server.getJSONArray("users").getJSONObject(0).getString("flow"))
         assertEquals("public", outbound.getJSONObject("streamSettings").getJSONObject("realitySettings").getString("publicKey"))
     }
+
+    @Test fun vmessNumericPortTrojanAndShadowsocksRemainRealOutbounds() {
+        val vmess = JSONObject().put("add", "test.invalid").put("port", 443)
+            .put("id", "00000000-0000-4000-8000-000000000001").put("ps", "VMess name")
+        val vmessConfig = UriToXray.convert("vmess://" + Base64.getEncoder().encodeToString(vmess.toString().toByteArray()), 0)
+        assertEquals("VMess name", vmessConfig.getString("remarks"))
+        val vmessServer = vmessConfig.getJSONArray("outbounds").getJSONObject(0).getJSONObject("settings").getJSONArray("vnext").getJSONObject(0)
+        assertEquals(443, vmessServer.getInt("port"))
+        val trojan = UriToXray.convert("trojan://pass%2Bword@test.invalid:443#Trojan", 0).getJSONArray("outbounds").getJSONObject(0)
+        assertEquals("pass+word", trojan.getJSONObject("settings").getJSONArray("servers").getJSONObject(0).getString("password"))
+        assertEquals("tls", trojan.getJSONObject("streamSettings").getString("security"))
+        val user = Base64.getEncoder().withoutPadding().encodeToString("aes-128-gcm:password".toByteArray())
+        val shadowsocks = UriToXray.convert("ss://$user@test.invalid:443#SS", 0).getJSONArray("outbounds").getJSONObject(0)
+        assertEquals("aes-128-gcm", shadowsocks.getJSONObject("settings").getJSONArray("servers").getJSONObject(0).getString("method"))
+    }
 }

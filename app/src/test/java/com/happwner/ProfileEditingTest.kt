@@ -47,6 +47,16 @@ class ProfileEditingTest {
         assertFalse(DeviceProfiles.currentIdentity(context).subscriptionHeaders().containsKey("x-hwid"))
     }
 
+    @Test fun editingHwidAlsoRemovesAStaleExtraHeaderOverride() {
+        val context = TestPreferencesContext()
+        DeviceProfiles.save(context, DeviceProfiles.Preset(name = "Test", hwid = "one", sendHwid = true,
+            headers = mapOf("X-Hwid" to "stale", "X-Test" to "keep")))
+        DeviceProfiles.updateHwid(context, "new-hwid")
+        val headers = DeviceProfiles.currentIdentity(context).subscriptionHeaders()
+        assertEquals("new-hwid", headers["x-hwid"])
+        assertEquals("keep", headers["X-Test"])
+    }
+
     @Test fun defaultIsJsonAndFormatChoiceIsTheSameForUiAndBridge() {
         val context = TestPreferencesContext()
         context.preferences.edit().putBoolean("process_manual", true).commit()
