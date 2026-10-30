@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Happwner" parent="Theme.Happwner.Base">
+        <item name="android:dialogCornerRadius">@dimen/dialog_corner_radius</item>
+    </style>
+    <style name="Theme_Happwner_Dialog" parent="Theme_Happwner_Dialog_Base">
+        <item name="android:dialogCornerRadius">@dimen/dialog_corner_radius</item>
+    </style>
+</resources>

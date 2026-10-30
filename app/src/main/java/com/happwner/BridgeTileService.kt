@@ -37,6 +37,8 @@ class BridgeTileService : TileService() {
     }
 
     // Go through an activity when the notification permission must be requested
+    // The PendingIntent overload is available from API 34; older devices require Intent.
+    @android.annotation.SuppressLint("StartActivityAndCollapseDeprecated")
     private fun startToggleActivity() {
         val intent = Intent(this, BridgeToggleActivity::class.java).apply {
             action = BridgeController.ACTION_TOGGLE

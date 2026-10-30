@@ -1756,7 +1756,9 @@ class MainActivity : AppCompatActivity() {
             hwidHint.alpha = 0f
             hwidHint.visibility = View.VISIBLE
             hwidHint.layoutParams.height = 0
-            if (hintLp != null) hintLp.bottomMargin = 0
+            if (hintLp != null) {
+                hintLp.bottomMargin = 0
+            }
             hwidHint.layoutParams = hwidHint.layoutParams
         }
 
@@ -2269,14 +2271,9 @@ class MainActivity : AppCompatActivity() {
                 val textColor = argb.evaluate(fraction, startTextColor, targetTextColor) as Int
 
                 val disabledColor = ContextCompat.getColor(this@MainActivity, R.color.text_disabled)
-                val colorList = android.content.res.ColorStateList(
-                    arrayOf(
-                        intArrayOf(-android.R.attr.state_enabled),
-                        intArrayOf(android.R.attr.state_focused),
-                        intArrayOf()
-                    ),
-                    intArrayOf(disabledColor, color, unfocused)
-                )
+                val states = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_focused), intArrayOf())
+                val colors = intArrayOf(disabledColor, color, unfocused)
+                val colorList = android.content.res.ColorStateList(states, colors)
                 layout.setBoxStrokeColorStateList(colorList)
                 layout.hintTextColor = colorList
                 layout.defaultHintTextColor = colorList

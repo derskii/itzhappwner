@@ -129,7 +129,6 @@ class MainHook {
                         val loadedIntent = Intent("${MODULE_PACKAGE}.MODULE_LOADED").apply {
                             setPackage(MODULE_PACKAGE)
                             putExtra("pkg", context.packageName)
-                            addFlags(0x01000000) // FLAG_RECEIVER_INCLUDE_BACKGROUND
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                             val options = android.app.BroadcastOptions.makeBasic()
@@ -830,6 +829,8 @@ class MainHook {
     } catch (_: Throwable) { false }
 
     // Listen for SETTINGS_UPDATE and refresh the RAM cache
+    // The legacy overload is required below API 33; the new overload explicitly exports the receiver.
+    @android.annotation.SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun registerSignalReceiver(context: Context) {
         val filter = IntentFilter("${MODULE_PACKAGE}.SETTINGS_UPDATE")
         val receiver = object : BroadcastReceiver() {

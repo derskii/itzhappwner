@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Happwner" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Happwner.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
         <item name="colorPrimary">@color/brand_purple</item>
         <item name="colorPrimaryVariant">@color/brand_purple</item>
@@ -32,7 +32,6 @@
         <item name="materialAlertDialogTheme">@style/Theme_Happwner_Dialog</item>
 
         <item name="dialogCornerRadius">@dimen/dialog_corner_radius</item>
-        <item name="android:dialogCornerRadius">@dimen/dialog_corner_radius</item>
 
         <item name="happScreenBg">@color/app_background</item>
         <item name="happCardBg">@color/island_surface</item>
@@ -60,7 +59,7 @@
         <item name="android:textColorHighlight">@color/text_selection_highlight_selector</item>
     </style>
 
-    <style name="Theme_Happwner_Dialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <style name="Theme_Happwner_Dialog_Base" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="colorSurface">@color/dialog_background</item>
         <item name="android:colorBackground">@color/dialog_background</item>
 
@@ -74,7 +73,6 @@
 
         <item name="shapeAppearance">@style/ShapeAppearance_Happwner_Dialog</item>
         <item name="dialogCornerRadius">@dimen/dialog_corner_radius</item>
-        <item name="android:dialogCornerRadius">@dimen/dialog_corner_radius</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
     </style>
 
@@ -136,23 +134,13 @@
         <item name="elevationOverlayColor">@color/amoled_bg</item>
     </style>
 
-    <style name="ThemeOverlay.Happwner.Monet" parent="">
-        <item name="colorPrimary">@android:color/system_accent1_600</item>
-        <item name="colorPrimaryVariant">@android:color/system_accent1_700</item>
-        <item name="colorSecondary">@android:color/system_accent1_600</item>
-        <item name="colorSecondaryVariant">@android:color/system_accent1_700</item>
-        <item name="colorAccent">@android:color/system_accent1_600</item>
-        <item name="colorControlActivated">@android:color/system_accent1_600</item>
-        <item name="android:textColorLink">@android:color/system_accent1_600</item>
-
-        <item name="happAccent">@android:color/system_accent1_600</item>
-        <item name="happToolbarBg">@android:color/system_accent1_600</item>
-        <item name="happStatusBarBg">@android:color/system_accent1_700</item>
-    </style>
+    <style name="ThemeOverlay.Happwner.Monet" parent="" />
 
     <style name="Theme.Happwner.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/app_background</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.Happwner</item>
     </style>
+    <style name="Theme.Happwner" parent="Theme.Happwner.Base" />
+    <style name="Theme_Happwner_Dialog" parent="Theme_Happwner_Dialog_Base" />
 </resources>

@@ -153,7 +153,6 @@ object PrefsManager {
         for (target in targets) {
             if (target.isBlank() || target == context.packageName) continue
             val intent = Intent("${context.packageName}.SETTINGS_UPDATE").setPackage(target)
-                .addFlags(0x01000000) // FLAG_RECEIVER_INCLUDE_BACKGROUND
             context.sendBroadcast(intent)
         }
     }
