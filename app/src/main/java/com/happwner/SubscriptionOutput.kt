@@ -37,7 +37,7 @@ object SubscriptionOutput {
             var input = raw
             var head = SubscriptionFiles.preview(input).trimStart().removePrefix("\uFEFF").trimStart()
             if (head.isEmpty()) throw IOException("Empty subscription")
-            if (!head.startsWith('{') && !head.startsWith('[') && !head.contains("://") && decodeBase64) {
+            if (!head.startsWith('{') && !head.startsWith('[') && !head.contains("://") && (decodeBase64 || format != SubscriptionFormat.URI)) {
                 val temp = File.createTempFile("decoded-", ".txt", raw.parentFile)
                 decoded = temp
                 val normalized = object : FilterInputStream(raw.inputStream().buffered(16 * 1024)) {

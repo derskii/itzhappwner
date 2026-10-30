@@ -66,6 +66,8 @@ class SubscriptionOutputTest {
         val file = temporary.newFile()
         file.writeText(Base64.getMimeEncoder().encodeToString((0 until 500).joinToString("\n") { vless.replace("#Test", "#Test-$it") }.toByteArray()))
         assertEquals(500, JSONArray(process(file).file.readText()).length())
+        val explicitJson = SubscriptionOutput.process(file, SubscriptionFormat.JSON, false, { temporary.newFile() })
+        assertEquals(500, JSONArray(explicitJson.file.readText()).length())
     }
 
     @Test fun bigBase64JsonIsDecodedOnDiskWithoutUriConversion() {

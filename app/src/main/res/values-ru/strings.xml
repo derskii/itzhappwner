@@ -53,7 +53,7 @@
     <string name="setting_process_json">JSON в URI</string>
     <string name="setting_process_json_desc">Конвертировать полученные JSON-массивы в диплинки. URI-ссылки менее функциональны по сравнению с JSON, но совместимы практически с любым клиентом</string>
     <string name="setting_process_b64">Base64 в текст</string>
-    <string name="setting_process_b64_desc">Декодировать Base64-данные, полученные от сервера</string>
+    <string name="setting_process_b64_desc">Декодировать Base64-данные, полученные от сервера В форматах JSON и sing-box JSON Base64 всегда декодируется автоматически.</string>
     <string name="setting_process_xray">Xray в sing-box</string>
     <string name="setting_process_xray_desc">Конвертировать полученные Xray-конфиги в формат sing-box для NekoBox, husi, Hiddify и подобных</string>
     <string name="setting_header_response_info"><![CDATA[

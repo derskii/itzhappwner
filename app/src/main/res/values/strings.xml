@@ -59,7 +59,7 @@
     <string name="setting_process_json">JSON to URI</string>
     <string name="setting_process_json_desc">Convert received JSON arrays into deeplinks. URI links are less feature-rich than JSON but compatible with virtually any client</string>
     <string name="setting_process_b64">Base64 to text</string>
-    <string name="setting_process_b64_desc">Decode Base64 payloads received from the server</string>
+    <string name="setting_process_b64_desc">Decode Base64 payloads received from the server JSON and sing-box JSON always decode Base64 automatically.</string>
     <string name="setting_process_xray">Xray to sing-box</string>
     <string name="setting_process_xray_desc">Convert received Xray configs into sing-box format for NekoBox, husi, Hiddify and similar clients</string>
     <string name="setting_header_response_info"><![CDATA[
