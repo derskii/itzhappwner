@@ -54,6 +54,12 @@ class SubscriptionOutputTest {
         assertEquals("a/b+c", stream.getJSONObject("grpcSettings").getString("serviceName"))
         assertEquals("example.invalid", stream.getJSONObject("tlsSettings").getString("serverName"))
         assertEquals(vless, config.getString("happwner_source_uri"))
+        val singBox = process(file, SubscriptionFormat.SING_BOX).file.readText()
+        val singBoxConfig = JSONObject(singBox)
+        val proxies = singBoxConfig.getJSONArray("outbounds")
+        val proxy = (0 until proxies.length()).map { proxies.getJSONObject(it) }.first { it.optString("type") == "vless" }
+        assertEquals("a/b+c", proxy.getJSONObject("transport").getString("service_name"))
+        File("build/verification").apply { mkdirs() }.resolve("sing-box-grpc.json").writeText(singBox)
     }
 
     @Test fun fiveHundredBase64LinksProduceFiveHundredJsonConfigs() {

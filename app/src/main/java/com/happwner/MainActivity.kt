@@ -824,7 +824,7 @@ class MainActivity : AppCompatActivity() {
                     val processed = processSubscriptionFile(raw, urlString, response.headers) { processedFile = it }
                     processedFile = processed.first
                     if (gen != fetchGeneration || inputUrl.text.toString().trim() != activeFetchUrl) return@launch
-                    showFileResult(processed.first, processed.second)
+                    showFileResult(processed.first, processed.second, processed.third)
                 } catch (e: CancellationException) { throw e }
                 catch (e: Exception) {
                     if (gen == fetchGeneration) showFetchError(e)
@@ -1300,7 +1300,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 val result = processSubscriptionFile(raw, url, headers) { candidate = it }
                 candidate = result.first
-                if (gen == fetchGeneration) showFileResult(result.first, result.second)
+                if (gen == fetchGeneration) showFileResult(result.first, result.second, result.third)
             } catch (e: CancellationException) { throw e }
             catch (e: Exception) { if (gen == fetchGeneration) showFetchError(e) }
             finally { candidate?.takeIf { it != resultFile && it != sourceResponseFile }?.delete() }
@@ -1360,7 +1360,7 @@ class MainActivity : AppCompatActivity() {
                     sourceResponseHeaders = emptyMap()
                     val processed = processSubscriptionFile(raw, null, emptyMap()) { processedFile = it }
                     processedFile = processed.first
-                    if (gen == fetchGeneration) showFileResult(processed.first, processed.second)
+                    if (gen == fetchGeneration) showFileResult(processed.first, processed.second, processed.third)
                 } catch (e: CancellationException) { throw e }
                 catch (e: Exception) { if (gen == fetchGeneration) showFetchError(e) }
                 finally {
@@ -1383,7 +1383,7 @@ class MainActivity : AppCompatActivity() {
         exportSubscriptionLauncher.launch("Happwner-subscription.$extension")
     }
 
-    private suspend fun processSubscriptionFile(raw: File, url: String?, headers: Map<String, List<String>>, onOutput: (File) -> Unit): Pair<File, String?> {
+    private suspend fun processSubscriptionFile(raw: File, url: String?, headers: Map<String, List<String>>, onOutput: (File) -> Unit): Triple<File, String?, SubscriptionFormat> {
         val format = SubscriptionFormat.read(prefs)
         val decode = prefs.getBoolean("process_b64_manual", true)
         return withContext(Dispatchers.Default) {
@@ -1414,9 +1414,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     if (result.fromLinks) notes += getString(R.string.msg_json_from_links)
                     if (result.skipped > 0) notes += resources.getQuantityString(R.plurals.msg_xray_skipped, result.skipped, result.skipped)
-                    file to notes.joinToString("\n").takeIf { it.isNotEmpty() }
+                    Triple(file, notes.joinToString("\n").takeIf { it.isNotEmpty() }, format)
                 } catch (e: CancellationException) { throw e }
-                catch (e: Exception) { raw to (getString(R.string.msg_file_raw_failed) + "\n" + (e.message ?: e.javaClass.simpleName).take(1024)) }
+                catch (e: Exception) { Triple(raw, getString(R.string.msg_file_raw_failed) + "\n" + (e.message ?: e.javaClass.simpleName).take(1024), format) }
                 finally { plaintextFile?.delete() }
             }
         }
@@ -1427,10 +1427,15 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnOutputFormat).text = getString(R.string.output_format_selected, formats[SubscriptionFormat.read(prefs).ordinal])
     }
 
-    private suspend fun showFileResult(file: File, note: String?) {
+    private suspend fun showFileResult(file: File, note: String?, format: SubscriptionFormat) {
         val preview = withContext(Dispatchers.IO) { SubscriptionFiles.preview(file) }
+        if (format != SubscriptionFormat.read(prefs)) {
+            if (file != sourceResponseFile) file.delete()
+            reprocessCurrentSource()
+            return
+        }
         resultFile = file
-        resultFormat = SubscriptionFormat.read(prefs)
+        resultFormat = format
         renderFilePreview(file, preview, note)
     }
 

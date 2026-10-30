@@ -41,7 +41,9 @@ jobs:
         run: |
           curl -fL --retry 2 -o "$RUNNER_TEMP/sing-box.tar.gz" https://github.com/SagerNet/sing-box/releases/download/v1.14.4/sing-box-1.14.4-linux-amd64.tar.gz
           tar -xzf "$RUNNER_TEMP/sing-box.tar.gz" -C "$RUNNER_TEMP"
-          "$RUNNER_TEMP/sing-box-1.14.4-linux-amd64/sing-box" check -c app/build/verification/sing-box-500.json
+          for config in app/build/verification/sing-box-*.json; do
+            "$RUNNER_TEMP/sing-box-1.14.4-linux-amd64/sing-box" check -c "$config"
+          done
 
       - name: Upload APKs
         uses: actions/upload-artifact@v4
