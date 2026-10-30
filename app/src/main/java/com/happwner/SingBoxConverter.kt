@@ -533,14 +533,6 @@ object SingBoxConverter {
         renameStringArray(r, "inbound", inboundRename)
     }
 
-    private fun renameStringArray(obj: JSONObject, key: String, names: Map<String, String>) {
-        val values = obj.optJSONArray(key) ?: return
-        for (i in 0 until values.length()) {
-            val value = values.optString(i, "")
-            names[value]?.let { values.put(i, it) }
-        }
-    }
-
     // Extract only supported proxy outbounds; take names from remarks
     private fun extractProxyOutbounds(xray: JSONObject, nameFallback: String): List<JSONObject>? {
         val remarks = (xray.optString("remarks", "").ifEmpty {

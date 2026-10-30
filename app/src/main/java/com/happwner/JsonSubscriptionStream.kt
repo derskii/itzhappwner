@@ -7,7 +7,7 @@ import java.io.Reader
 object JsonSubscriptionStream {
     const val MAX_NESTING = 128
 
-    fun forEachObject(reader: Reader, consume: (String) -> Unit) {
+    fun forEachObject(reader: Reader, checkActive: () -> Unit = {}, consume: (String) -> Unit) {
         val input = reader.buffered()
         fun nextNonWhitespace(): Int {
             var ch: Int
@@ -22,6 +22,7 @@ object JsonSubscriptionStream {
             return
         }
         while (next != -1) {
+            checkActive()
             if (next != '{'.code) throw IOException("Expected a JSON configuration")
             val objectText = StringBuilder("{")
             val stack = ArrayDeque<Char>().apply { addLast('}') }
@@ -32,6 +33,7 @@ object JsonSubscriptionStream {
                 if (code < 0) throw IOException("Incomplete JSON configuration")
                 val ch = code.toChar()
                 objectText.append(ch)
+                if (objectText.length % 8192 == 0) checkActive()
                 if (objectText.length > SubscriptionFiles.MAX_PROCESS_BYTES / 2) {
                     throw IOException("Individual JSON configuration exceeds the processing limit")
                 }

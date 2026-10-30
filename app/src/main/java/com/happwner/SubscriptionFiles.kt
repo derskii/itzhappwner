@@ -14,11 +14,11 @@ object SubscriptionFiles {
     const val PREVIEW_CHARS = 15_000
 
     /** JSON-to-URI can process hundreds of large configs with memory bounded by one config. */
-    fun convertJsonFile(input: File, output: File, xrayToSb: Boolean): Int {
+    fun convertJsonFile(input: File, output: File, xrayToSb: Boolean, checkActive: () -> Unit = {}): Int {
         var skipped = 0
         output.bufferedWriter(Charsets.UTF_8).use { writer ->
             input.reader(Charsets.UTF_8).use { reader ->
-                JsonSubscriptionStream.forEachObject(reader) { json ->
+                JsonSubscriptionStream.forEachObject(reader, checkActive) { json ->
                     if (Thread.currentThread().isInterrupted) throw java.io.InterruptedIOException()
                     val result = LinkConverter.convertWithStats(json, jsonToUri = true, tryBase64 = false, xrayToSb = xrayToSb)
                     if (result.text.isNotEmpty()) {

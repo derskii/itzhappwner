@@ -42,6 +42,7 @@ import com.google.android.material.color.MaterialColors
 import com.google.android.material.textfield.TextInputLayout
 import java.io.File
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -89,10 +90,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var output: TextView
     private lateinit var outputWaitLabel: TextView
-    private var outputExpanding = false
     private var blockOutputTouch = false
-    private var outputExpandAborted = false
-    private var expandJob: kotlinx.coroutines.Job? = null
     private lateinit var btnGetSub: Button
     private lateinit var btnPasteUrlManual: ImageButton
 
@@ -100,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     private var resultFile: File? = null
     private var resultNote: String? = null
     private var pendingExportFile: File? = null
-    private var fullResponseText: String = ""
+    private var responsePreview: String = ""
     private val MAX_DISPLAY_CHARS by lazy { resources.getInteger(R.integer.max_display_chars) }
     private var lastFetchTapMs = 0L
     private var lastGetSubTapMs = 0L
@@ -108,8 +106,6 @@ class MainActivity : AppCompatActivity() {
     private var activeFetchJob: kotlinx.coroutines.Job? = null
     private var activeFetchUrl: String? = null
     private var decryptGeneration = 0
-    private var loadingPhaseRunning = false
-    private var pendingConfigText: CharSequence? = null
 
     private val fastTransition by lazy {
         buildBoundsFadeTransition(
@@ -524,8 +520,6 @@ class MainActivity : AppCompatActivity() {
         // Collapse / expand the output section
         outputHeader.setOnClickListener {
             currentFocus?.clearFocus()
-            outputExpandAborted = true
-            expandJob?.cancel()
             output.animate().cancel()
             output.alpha = 1f
             hideWaitLabel()
@@ -580,10 +574,7 @@ class MainActivity : AppCompatActivity() {
             cancelActiveFetch()
             mainContainer.beginDelayedTransitionIfEnabled(fastTransition)
             resultFile = null
-            fullResponseText = ""
-            outputExpandAborted = true
-            expandJob?.cancel()
-            outputExpanding = false
+            responsePreview = ""
             output.animate().cancel()
             output.alpha = 1f
             hideWaitLabel()
@@ -793,30 +784,13 @@ class MainActivity : AppCompatActivity() {
             cancelActiveFetch()
             val gen = ++fetchGeneration
             activeFetchUrl = urlString.trim()
-            pendingConfigText = null
-            loadingPhaseRunning = true
             resultFile = null
-            fullResponseText = ""
-            outputExpandAborted = true
-            expandJob?.cancel()
-            outputExpanding = false
+            responsePreview = ""
             hideWaitLabel()
 
-            output.crossfadeContent(onEnd = {
-                if (gen != fetchGeneration) return@crossfadeContent
-                loadingPhaseRunning = false
-                val pending = pendingConfigText
-                if (pending != null) {
-                    pendingConfigText = null
-                    output.crossfadeContent { showOutputText(pending) }
-                }
-            }) {
-                output.visibility = View.VISIBLE
-                btnExpandOutput.setImageResource(R.drawable.ic_expand_less)
-                output.text = getString(R.string.msg_loading)
-                output.setTextIsSelectable(false)
-                applyOutputScrollbar()
-            }
+            output.animate().cancel()
+            output.alpha = 1f
+            showOutputText(getString(R.string.msg_loading))
 
             activeFetchJob = lifecycleScope.launch {
                 var rawFile: File? = null
@@ -1301,7 +1275,7 @@ class MainActivity : AppCompatActivity() {
             cancelActiveFetch()
             val gen = ++fetchGeneration
             resultFile = null
-            fullResponseText = ""
+            responsePreview = ""
             output.animate().cancel()
             showOutputText(getString(R.string.msg_loading))
             activeFetchJob = lifecycleScope.launch {
@@ -1333,7 +1307,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         pendingExportFile = file
-        val extension = if (fullResponseText.trimStart().startsWith("{") || fullResponseText.trimStart().startsWith("[")) "json" else "txt"
+        val extension = if (responsePreview.trimStart().startsWith("{") || responsePreview.trimStart().startsWith("[")) "json" else "txt"
         exportSubscriptionLauncher.launch("Happwner-subscription.$extension")
     }
 
@@ -1342,13 +1316,14 @@ class MainActivity : AppCompatActivity() {
         val tryBase64 = prefs.getBoolean("process_b64_manual", true)
         val xrayToSb = prefs.getBoolean("process_xray_manual", false)
         return withContext(Dispatchers.Default) {
+            val processingContext = coroutineContext
             SubscriptionFiles.processingMutex.withLock {
                 try {
                     if (raw.length() > SubscriptionFiles.MAX_PROCESS_BYTES) {
                         val encrypted = headers.keys.any { it.equals("Encrypt-Tag", true) }
                         if (!jsonToUri || encrypted) return@withLock raw to getString(R.string.msg_file_raw_large)
                         val file = newSubscriptionFile()
-                        val skipped = try { SubscriptionFiles.convertJsonFile(raw, file, xrayToSb) }
+                        val skipped = try { SubscriptionFiles.convertJsonFile(raw, file, xrayToSb) { processingContext.ensureActive() } }
                         catch (e: Exception) { file.delete(); throw e }
                         val note = if (skipped > 0) resources.getQuantityString(R.plurals.msg_xray_skipped, skipped, skipped) else null
                         return@withLock file to note
@@ -1382,7 +1357,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun renderFilePreview(file: File, preview: String, note: String?) {
         resultNote = note
-        fullResponseText = preview
+        responsePreview = preview
         val display = SpannableStringBuilder()
         if (!note.isNullOrEmpty()) display.append(note).append("\n\n")
         display.append(preview)
@@ -1395,16 +1370,12 @@ class MainActivity : AppCompatActivity() {
             }, start, display.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         // Invalidate the loading animation before displaying the final bounded preview.
-        loadingPhaseRunning = false
-        pendingConfigText = null
         output.animate().cancel()
         output.alpha = 1f
         showOutputText(display)
     }
 
     private fun showFetchError(error: Exception) {
-        loadingPhaseRunning = false
-        pendingConfigText = null
         output.animate().cancel()
         output.alpha = 1f
         showOutputText(getString(R.string.error_fetch_failed, error.message ?: error.javaClass.simpleName))
@@ -1424,7 +1395,7 @@ class MainActivity : AppCompatActivity() {
 
     // Pick the scrollbar mode: custom thumb only for a large result that's expanded on screen, otherwise stock
     private fun applyOutputScrollbar() {
-        val large = fullResponseText.length > MAX_DISPLAY_CHARS && output.visibility == View.VISIBLE
+        val large = responsePreview.length > MAX_DISPLAY_CHARS && output.visibility == View.VISIBLE
         (findViewById<View>(R.id.mainScrollView) as? NoAutoScrollView)?.setFastScrollActive(large)
     }
 
@@ -2118,12 +2089,6 @@ class MainActivity : AppCompatActivity() {
         try { unregisterReceiver(receiver) } catch (e: Exception) {}
     }
 
-    private data class ProcessedResponse(
-        val stats: LinkConverter.ConversionStats,
-        val wasDecrypted: Boolean,
-        val decryptFailure: Pair<String, String>?
-    )
-
     private fun createRequestIdentity(hwid: String, userAgent: String): RequestIdentity {
         // UI fields are mirrors while a profile is active; every transport uses this snapshot.
         return DeviceProfiles.active(this)?.identity() ?: DeviceProfiles.currentIdentity(this).copy(userAgent=userAgent, hwid=hwid)
@@ -2136,9 +2101,7 @@ class MainActivity : AppCompatActivity() {
         fetchGeneration++
         if (job?.isActive == true) {
             job.cancel()
-            pendingConfigText = null
-            loadingPhaseRunning = false
-            if (::output.isInitialized && output.text == getString(R.string.msg_loading)) {
+                if (::output.isInitialized && output.text == getString(R.string.msg_loading)) {
                 setHtmlText(output, R.string.label_result_default)
                 output.setTextIsSelectable(false)
             }
@@ -2156,9 +2119,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    // GET the subscription using the shared identity profile, then capture body and headers
-    private suspend fun makeRequest(url: String, identity: RequestIdentity): SubscriptionHttp.Result =
-        SubscriptionHttp.get(url, identity)
+
 
     // Pick the URL field color by state (error / encrypted / normal)
     private fun getUrlCurrentColor(): Int {

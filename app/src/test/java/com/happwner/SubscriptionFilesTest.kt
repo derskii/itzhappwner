@@ -52,10 +52,10 @@ class SubscriptionFilesTest {
 
     @Test fun readerHandlesEscapesAndConsecutiveMultilineObjects() {
         val objects = mutableListOf<String>()
-        JsonSubscriptionStream.forEachObject(StringReader("\uFEFF[{\"a\":\"}\\\"[\",\"b\":[{}]}, {\"c\":2}]"), objects::add)
+        JsonSubscriptionStream.forEachObject(StringReader("\uFEFF[{\"a\":\"}\\\"[\",\"b\":[{}]}, {\"c\":2}]"), consume = { objects.add(it) })
         assertEquals(2, objects.size)
         val sequence = mutableListOf<String>()
-        JsonSubscriptionStream.forEachObject(StringReader(config(0) + "\n" + config(1)), sequence::add)
+        JsonSubscriptionStream.forEachObject(StringReader(config(0) + "\n" + config(1)), consume = { sequence.add(it) })
         assertEquals(2, sequence.size)
     }
 

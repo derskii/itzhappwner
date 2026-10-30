@@ -30,7 +30,7 @@ class LSPatchReceiver : BroadcastReceiver() {
                 return
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                val senderUid = intent.sentFromUid
+                val senderUid = sentFromUid
                 val senderPackages = try { context.packageManager.getPackagesForUid(senderUid)?.toSet().orEmpty() }
                     catch (_: Throwable) { emptySet() }
                 if (pkg !in senderPackages) {

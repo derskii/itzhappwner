@@ -301,7 +301,8 @@ class SubscriptionService : Service() {
                         if (!jsonToUri) return@withLock raw
                         val converted = File.createTempFile("bridge-converted-", ".txt", cacheDir)
                         convertedFile = converted
-                        SubscriptionFiles.convertJsonFile(raw, converted, xrayToSb)
+                        val processingContext = coroutineContext
+                        SubscriptionFiles.convertJsonFile(raw, converted, xrayToSb) { processingContext.ensureActive() }
                         return@withLock converted
                     }
                     val body = raw.readText(Charsets.UTF_8)
