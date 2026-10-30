@@ -1,0 +1,18 @@
+Stage 1 source checkpoint: 2026-10-18 Europe/Moscow
+Kotlin debug compilation: PASS (no APK packaging)
+JVM tests: 22 passed, 0 failures, 0 errors, 0 skipped
+  RequestIdentityTest: 12
+  IdentityCodecTest: 4
+  HookInvocationTest: 6
+Android instrumentation storage/migration tests: 6 prepared, NOT RUN
+APK: NOT BUILT; app/device/native-hook runtime QA: NOT RUN
+git diff --check: PASS
+
+Offline run used unmodified pinned test jars (temporary init script replaced only Maven dependency resolution):
+happwner-junit-4.13.2.jar SHA256 8e495b634469d64fb8acfa3495a065cbacc8a0fff55ce1e31007be4c16dc57d3
+happwner-hamcrest-1.3.jar SHA256 66fdef91e9739348df7a096aa384a5685f4e875584cce89386a7a47251c4d8e9
+happwner-json-20250517.jar SHA256 3ea61b2a06e31edf1c91134fe9106b0ebb16628be169f3db75bc7a2b06b45796
+
+The old API-102 test proxy returned null from fluent builder setters; fixed its fixture to return the proxy, matching HookBuilder semantics. No backend production behavior changed for that test fix.
+Normal online command: ./gradlew :app:testDebugUnitTest
+Storage test suite uses the test APK private preferences, not the user application preferences.

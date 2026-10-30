@@ -1,0 +1,78 @@
+name: Release APK
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag (must match versionName)
+        required: true
+        default: v1.3.3-api102
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+      - uses: android-actions/setup-android@v3
+      - name: Install SDK
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - name: Configure release signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import os, base64
+          from pathlib import Path
+          names = ['KEYSTORE_BASE64', 'STORE_PASSWORD', 'KEY_ALIAS', 'KEY_PASSWORD']
+          if not all(os.environ.get(name) for name in names):
+              raise SystemExit('Configure the four RELEASE_* repository secrets before releasing')
+          key = Path(os.environ['RUNNER_TEMP']) / 'happwner-release.jks'
+          key.write_bytes(base64.b64decode(os.environ['KEYSTORE_BASE64'], validate=True))
+          key.chmod(0o600)
+          def escape(value):
+              return value.replace('\\', '\\\\').replace('\n', '\\n').replace('\r', '\\r')
+          values = {'RELEASE_STORE_FILE': str(key), 'RELEASE_STORE_PASSWORD': os.environ['STORE_PASSWORD'],
+                    'RELEASE_KEY_ALIAS': os.environ['KEY_ALIAS'], 'RELEASE_KEY_PASSWORD': os.environ['KEY_PASSWORD']}
+          Path('local.properties').write_text(''.join(f'{k}={escape(v)}\n' for k, v in values.items()))
+          Path('local.properties').chmod(0o600)
+          PY
+      - name: Tests, lint and release build
+        run: bash ./gradlew --no-daemon testDebugUnitTest lintDebug assembleRelease
+      - name: Verify APK and prepare checksums
+        run: |
+          mkdir -p dist
+          test "$RELEASE_TAG" = v1.3.3-api102
+          cp app/build/outputs/apk/release/app-release.apk "dist/Happwner-$RELEASE_TAG.apk"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose dist/*.apk
+          cd dist
+          sha256sum *.apk > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: signed-release
+          path: dist/*
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$RELEASE_TAG" dist/* --target "$GITHUB_SHA" --title "Happwner $RELEASE_TAG" --notes-file docs/releases/v1.3.3-api102.md
+      - name: Remove signing files
+        if: always()
+        run: rm -f local.properties "$RUNNER_TEMP/happwner-release.jks"

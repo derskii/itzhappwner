@@ -1,0 +1,22 @@
+<resources>
+    <string name="device_profile_choose">Какое устройство запрашивает подписку</string>
+    <string name="device_profile_button_off">Профиль устройства: ручные параметры</string>
+    <string name="device_profile_button_on">%1$s %2$s · %3$s</string>
+    <string name="device_profile_manual">Свой профиль…</string>
+    <string name="device_profile_disable">Отключить подмену устройства</string>
+    <string name="device_profile_presets">Выбрать готовый профиль</string>
+    <string name="device_profile_ua">User-Agent клиента (версию можно изменить)</string>
+    <string name="device_profile_apply">Применить профиль</string>
+    <string name="device_profile_help">ОС и модель передаются только при включённом пользовательском формате. Показаны переопределения; остальные заголовки, включая UA без переопределения, формирует исходный клиент или HTTP-библиотека. HWID сохраняется до явной замены.</string>
+    <string name="device_profile_windows11">Windows 11 · ПК</string>
+    <string name="device_profile_windows10">Windows 10 · ПК</string>
+    <string name="device_profile_linux">Linux · Ubuntu 24.04</string>
+    <string name="device_profile_android">Android 16 · Pixel 9</string>
+    <string name="device_profile_ios">iOS 18 · iPhone 15 Pro</string>
+    <string name="device_profile_macos">macOS 15 · MacBook Air</string>
+    <string name="device_profile_hwid">HWID этого профиля</string>
+    <string name="device_profile_generate_hwid">Создать новый HWID</string>
+    <string name="device_profile_preview_title">Переопределяемые заголовки</string>
+    <string name="device_profile_delete">Удалить свой профиль</string>
+    <string name="device_profile_delete_builtin">Готовый пресет удалить нельзя. Можно сохранить свою изменённую копию.</string>
+</resources>

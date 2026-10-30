@@ -1,0 +1,13 @@
+id,file,title,url,type,credibility_1_5,recency_1_5,bias_risk,checked
+S1,sources/01-libxposed-readme.md,libxposed API maintainer README,https://github.com/JingMatrix/libxposed-api/blob/master/README.md,primary repository,5,5,low,2026-10-18
+S2,sources/02-libxposed-build.md,libxposed API Android build metadata,https://github.com/JingMatrix/libxposed-api/blob/master/api/build.gradle.kts,primary repository,5,5,low,2026-10-18
+S3,sources/03-libxposed-interface.md,libxposed XposedInterface API 102,https://github.com/JingMatrix/libxposed-api/blob/master/api/src/main/java/io/github/libxposed/api/XposedInterface.java,primary repository,5,5,low,2026-10-18
+S4,sources/04-libxposed-module.md,libxposed module entry and lifecycle API,https://github.com/JingMatrix/libxposed-api/blob/master/api/src/main/java/io/github/libxposed/api/XposedModuleInterface.java,primary repository,5,5,low,2026-10-18
+S5,sources/05-vector-lifecycle.md,Vector API 102 lifecycle dispatch,https://github.com/JingMatrix/Vector/tree/master/xposed/src/main/kotlin/org/matrix/vector/impl,primary implementation,5,5,low,2026-10-18
+S6,sources/06-lsposed-guide.md,LSPosed modern module guide,https://github.com/LSPosed/LSPosed/wiki/Develop-Xposed-Modules-Using-Modern-Xposed-API,primary project documentation,5,4,low,2026-10-18
+S7,sources/07-happ-docs.md,Happ app-management developer docs,https://www.happ.su/main/dev-docs/app-management.md,primary product documentation,5,5,low,2026-10-18
+S8,sources/08-xtls-header-proposal.md,XTLS subscription header discussion,https://github.com/XTLS/Xray-core/discussions/4877,primary project discussion/proposal,4,4,moderate,2026-10-18
+S9,sources/09-happwner-terms.md,Happwner README usage terms,https://github.com/Omegaplexx/Happwner,primary project README,5,4,low,2026-10-18
+S10,sources/10-hiddify-ua.md,Hiddify app User-Agent source,https://github.com/hiddify/hiddify-app/blob/main/lib/core/model/app_info_entity.dart,primary client source,5,5,low,2026-10-18
+S11,sources/11-v2rayng-ua.md,v2rayNG subscription User-Agent source,https://github.com/2dust/v2rayNG/blob/master/V2rayNG/app/src/main/java/com/v2ray/ang/util/HttpUtil.kt,primary client source,5,5,low,2026-10-18
+S12,sources/12-nekobox-ua.md,NekoBox subscription User-Agent selection source,https://github.com/MatsuriDayo/NekoBoxForAndroid/blob/main/app/src/main/java/io/nekohasekai/sagernet/group/RawUpdater.kt,primary client source,5,5,low,2026-10-18

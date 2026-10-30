@@ -1,0 +1,943 @@
+{
+  "project": "Happwner API 102 source snapshot",
+  "date_utc": "2026-10-18T21:11:50.021597+00:00",
+  "base_commit": "e439dd8acf8cb31f6e99296824e07ccb8939dcd9",
+  "branch": "api102-device-profiles",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "size": 66,
+      "sha256": "1a1dbe176bc233b499d35a57db7513f2941c99ab9759f177830c9149be99005b"
+    },
+    {
+      "path": ".github/workflows/android.yml",
+      "size": 1129,
+      "sha256": "a438eb63baac003fe28ee286d749ba8c1592fbb7546b37b31b184daf7442fb34"
+    },
+    {
+      "path": ".gitignore",
+      "size": 450,
+      "sha256": "ac11f6f2e10bde37de4ac93a1aef236595321a8c141c2a0ce2131404d2cb18e4"
+    },
+    {
+      "path": "FORK_NOTES_RU.md",
+      "size": 6318,
+      "sha256": "2379dc99a1555df04bd6f4ebabff23619b475bb87a0eb803c972175c61c6d1a5"
+    },
+    {
+      "path": "README.md",
+      "size": 8025,
+      "sha256": "206042008b4b70df4f6b8ed3f89ff3624ca1e4f8dc8d633a28efd1ccdf7107b5"
+    },
+    {
+      "path": "README_RU.md",
+      "size": 12884,
+      "sha256": "025dafcb59a52c3bb108fef4b814c945dcd448651bd728f6f044cda277774fcf"
+    },
+    {
+      "path": "app/.gitignore",
+      "size": 36,
+      "sha256": "83d13eca5ecf8e0334daa497c107c77b04194750889b484aba05a89d5e5f9dad"
+    },
+    {
+      "path": "app/build.gradle.kts",
+      "size": 2862,
+      "sha256": "b7a57f8473ee95fb4334c871845aeae701acb4151be26d77633dbc50d823d651"
+    },
+    {
+      "path": "app/proguard-rules.pro",
+      "size": 1913,
+      "sha256": "ea0143faaa1a8c775f88351a12f7388d6ae69b7742303850f2d43ef8ea170f85"
+    },
+    {
+      "path": "app/src/androidTest/java/com/happwner/ProfilePersistenceTest.kt",
+      "size": 4915,
+      "sha256": "fffed9c379589ca0ceb5aceb48b40427f64cf35969891afc58b11c0cbfa9187a"
+    },
+    {
+      "path": "app/src/main/AndroidManifest.xml",
+      "size": 6384,
+      "sha256": "97d633bb7b3a5ab95a18435df15a9f7c2ed858f5e7c6690212c4955ec418bdeb"
+    },
+    {
+      "path": "app/src/main/assets/xposed_init",
+      "size": 31,
+      "sha256": "8713b22d419810d5f1f04e95e42f60611ed68df6967651e2af4f5749429d8e05"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/AnimUtils.kt",
+      "size": 35113,
+      "sha256": "5559208f6c57a37c87e26f98a705608d9616a9ce50cbcf59d9a75e419ead6289"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/BootReceiver.kt",
+      "size": 723,
+      "sha256": "b0270a59ef90fdf33070e55f251bf1db8d269229bd1081ca901b7c233bea622a"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/BootWorker.kt",
+      "size": 627,
+      "sha256": "420ef65d80893daa895210e59e48b2b685dd307352f5a96f443a567515dc2752"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/BridgeController.kt",
+      "size": 5097,
+      "sha256": "26e0a06241914639af79152fe11281b130852e0757fd7231ec59a426e2d7d0ad"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/BridgeTileService.kt",
+      "size": 2519,
+      "sha256": "1b37d6eb989273690564675bbeaf90f18ccf23cc7365d2640ad0d91db94d16ee"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/BridgeToggleActivity.kt",
+      "size": 1615,
+      "sha256": "a76337e52b27ce66b3ba495d16a329402efcf412724e5658c596d3a4c4f6d219"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/DeviceProfiles.kt",
+      "size": 15151,
+      "sha256": "e3207e854a24e4a2270d93eb014c527754b47883ea630c53c224713937a3b107"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/FastScrollThumb.kt",
+      "size": 5554,
+      "sha256": "72dee34b693b498acc90ac05835f127ab8ce67b0766fc7fa489e50ed6c949937"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/HappCrypto.kt",
+      "size": 160593,
+      "sha256": "68708d9cde669a252b16e4ed479693544a09449e0ce919e3f0233c27a27e037f"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/IdReceiver.kt",
+      "size": 270,
+      "sha256": "8a58fbaaad518724300c5ad34f0b256960a948cb97445ae9ba0c7161d99dec3e"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/IdentityCodec.kt",
+      "size": 3109,
+      "sha256": "7f17dacdd417fc541005908fe36d2aa5da991373db10a23c43720f6dbaaef8c4"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/IncyLinks.kt",
+      "size": 5528,
+      "sha256": "d7049db8b617971f9427e4cc64c7caa78d2b29f9f6b0d66c2d1631ff4321a667"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/LSPatchReceiver.kt",
+      "size": 4676,
+      "sha256": "9bf2930c565557c13f7e1396397a14b83272562a6301e500435075c6ff092dd7"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/LegacyModuleEntry.kt",
+      "size": 576,
+      "sha256": "e0b4abd993fcf14bc7f7f011b7b661aff0a12da5ae277f51a1aa218f8cc07abf"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/LinkConverter.kt",
+      "size": 33687,
+      "sha256": "76105feeb0d56c9f0c6470e2ac4fc1c2149b5208fcea6cbd9bbf29cb5782b4b5"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/LockableScrollEditText.kt",
+      "size": 1166,
+      "sha256": "726a873b7cb70f6082a3cbe50e50643d4ed00f9e971e82203eeb82a66a162c13"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/MainActivity.kt",
+      "size": 107046,
+      "sha256": "31e2d18c7168cd63d58d1c40d64d873eeb72bf16e3819c4eca0c785390be1f38"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/MainHook.kt",
+      "size": 43564,
+      "sha256": "2099d7289517d6d9499496a71f32ee527798187c4e85360879df6b0c2312583a"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/ModernXposedModule.kt",
+      "size": 1084,
+      "sha256": "c5e057a4ca47d5986e68ef38e8c76921f87d4ade9709d8e420d014f79664443b"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/ModuleStatus.kt",
+      "size": 167,
+      "sha256": "a0242e016eaa282b1ab0a2d48597ebd7f7153fddd6d949063c917509207d9eaa"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/NoAutoScrollView.kt",
+      "size": 10108,
+      "sha256": "241ff68df4c5e9ae8449595f49c6be0d450df60f7c179202acfdc131f1ef769f"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/OutputLinkMovementMethod.kt",
+      "size": 1970,
+      "sha256": "1c146a1c455af2b28eea1d1fe2c72e646a0be04300d340d239b290c4487399f9"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/PrefsManager.kt",
+      "size": 9664,
+      "sha256": "4277db2dc07e578ee4ee92215f8c439abb18ef278e488f447b62193ce51cb86d"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/ProfileDialogs.kt",
+      "size": 10527,
+      "sha256": "6a2a0bc65d3753459ebb3d9e2e32bf338b0eea4005d3fc3ccbe84deb78c047d4"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/RequestIdentity.kt",
+      "size": 4880,
+      "sha256": "f78992f8787266ef650739b85c2737fb9497752853c26d0f448569bc61984456"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/SettingsActivity.kt",
+      "size": 4088,
+      "sha256": "44fe3a0e15b044415b3e35b0ac50b1cbeae0e92dc7590da3b397771fcad797a8"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/SettingsFragment.kt",
+      "size": 52795,
+      "sha256": "9cea522b11a0e8ee1925b62801784c6b4e0bd42fb31136ff0aa22d3a25f47fa9"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/SettingsProvider.kt",
+      "size": 8049,
+      "sha256": "5328b3e49777d30a3010811a2f87abe9b5a9fc094b1ec9e08d0524b703af53ab"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/SingBoxConverter.kt",
+      "size": 103993,
+      "sha256": "4c09f9d2641d3f150c9fde9a779dc1218e3a496cf011f276127cf18695cd8f21"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/SubscriptionHttp.kt",
+      "size": 6959,
+      "sha256": "6038b25dc8e1ca3db0ce9c2fc4398c603dbde9ccec78a63d17a38e527f586676"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/SubscriptionService.kt",
+      "size": 19595,
+      "sha256": "07a7db0039dc954f8fdbfc5bf6e55770e1f91d5ceb3ad3da37c239f3f9712104"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/ThemeTransition.kt",
+      "size": 6339,
+      "sha256": "d5c8f73d49644b9d19fdf5c7c83f9406f80a703eb6b70380423e3aef52d3eeb8"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/V2RayTunCrypto.kt",
+      "size": 21572,
+      "sha256": "6238a7abc1d76e0b62633ade6cdb940ee4e2c74faa5033895e19488fe324a25b"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/WatchdogReceiver.kt",
+      "size": 2996,
+      "sha256": "d6f026b016a39975d904391b5b86c48ffba248cbfbaa298261fc93b7acf5c617"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/hooks/HookBackend.kt",
+      "size": 662,
+      "sha256": "11c066f098a3336c32e17ac6f504bb29bcf112c1f18690a88e6610848995d8b6"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/hooks/HookInvocation.kt",
+      "size": 1738,
+      "sha256": "2208e5f14bee4b7ac6347fb6fc185f76050a8a703e5a5ab11aa4f2834e8a2fff"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/hooks/LegacyHookBackend.kt",
+      "size": 1857,
+      "sha256": "b18a3f8e87dfa2fe0103fd99d8542e77aa8fb91811d1363cf13d7f0799d8f109"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/hooks/ModernHookBackend.kt",
+      "size": 1178,
+      "sha256": "8967e1a54d753e6d5c511d6d575279423b4caa75d0d8b91eb48ab0daa49da52e"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/hooks/XC_MethodHook.kt",
+      "size": 2990,
+      "sha256": "cba08d3eb25011117244948391ae5878b22d7debe4fcf0b3c3dc5b9a9e582833"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/hooks/XposedBridge.kt",
+      "size": 851,
+      "sha256": "04cf968486b27f7d00793e7a2d8f58bf345627e15e8092d6b7a13dd92d622433"
+    },
+    {
+      "path": "app/src/main/java/com/happwner/hooks/XposedHelpers.kt",
+      "size": 5754,
+      "sha256": "130af2d5ac111f9ede0f7e2f22fa888cc3e72cfeb555a0135d4dd1a4fb389a54"
+    },
+    {
+      "path": "app/src/main/res/color/amoled_switch_thumb.xml",
+      "size": 342,
+      "sha256": "1aeb44745f9f11dcea785e7fb1804970f88785697e35476b8135e8bde34c14c2"
+    },
+    {
+      "path": "app/src/main/res/color/amoled_switch_track.xml",
+      "size": 362,
+      "sha256": "d148866855b07f48014a6217df1a5c5f6239316ba406d64ffc30159dadc61124"
+    },
+    {
+      "path": "app/src/main/res/color/brand_purple_secondary_selector.xml",
+      "size": 340,
+      "sha256": "d058e75fb76dc4bcc12457a59f04e091a0bd3d5d1b18addaf44e89e31332ffc2"
+    },
+    {
+      "path": "app/src/main/res/color/checkbox_tint.xml",
+      "size": 260,
+      "sha256": "39fa6ef4b880d03fabcc9732c7ff0a103ec84c0a9c156732672fb3bce2481c33"
+    },
+    {
+      "path": "app/src/main/res/color/dialog_control_selector.xml",
+      "size": 260,
+      "sha256": "123d177181ff9c95e659f7cd0f7d9e189cb28dfc08d04713b8b1f3faa2f9f191"
+    },
+    {
+      "path": "app/src/main/res/color/happ_accent_ripple.xml",
+      "size": 190,
+      "sha256": "036a7e002774115df9d8f42f1506b331fdaec4943f3808f6d346939e82f7bcc4"
+    },
+    {
+      "path": "app/src/main/res/color/input_cursor_color_selector.xml",
+      "size": 257,
+      "sha256": "c70b3481df4395f196e6965dc4989e66d1afe3e373039c0d9baac7a8a0ccbdaf"
+    },
+    {
+      "path": "app/src/main/res/color/text_input_color_selector.xml",
+      "size": 250,
+      "sha256": "589056e2ac8394a060c432f16d0046a1ab25f308785ca2788efc9879b1690900"
+    },
+    {
+      "path": "app/src/main/res/color/text_input_hint_selector.xml",
+      "size": 340,
+      "sha256": "d058e75fb76dc4bcc12457a59f04e091a0bd3d5d1b18addaf44e89e31332ffc2"
+    },
+    {
+      "path": "app/src/main/res/color/text_selection_highlight_selector.xml",
+      "size": 267,
+      "sha256": "1bb8675ca536e8c295baefd2e742d2c9942cc5d6249a2fad79b2a4bcaf9af275"
+    },
+    {
+      "path": "app/src/main/res/color/toolbar_ripple_contrast.xml",
+      "size": 160,
+      "sha256": "203acd868381ab31e66be7436f53e4a54cbec33f558ee9fa4fedb9291c06ba7b"
+    },
+    {
+      "path": "app/src/main/res/color-v23/amoled_switch_thumb.xml",
+      "size": 329,
+      "sha256": "fccc881f2f907c35b2376132f93ce9b7d59cf950cae9019f7536f2cd333f2ad4"
+    },
+    {
+      "path": "app/src/main/res/color-v23/amoled_switch_track.xml",
+      "size": 349,
+      "sha256": "ad0beea8481533c0533cc1d97652fae56b6520afd773cd80e89cfeb70f37007d"
+    },
+    {
+      "path": "app/src/main/res/color-v23/brand_purple_secondary_selector.xml",
+      "size": 327,
+      "sha256": "402bdc3dfc45355d4e2417af3ec0f84cae4bfdb464c93f1538305d89dd358a8c"
+    },
+    {
+      "path": "app/src/main/res/color-v23/dialog_control_selector.xml",
+      "size": 247,
+      "sha256": "beaa32f7c54430b579ca29234b7c437d2d29aa8cad1418174510cf9c5a19161b"
+    },
+    {
+      "path": "app/src/main/res/color-v23/happ_accent_ripple.xml",
+      "size": 187,
+      "sha256": "0b4fd46a405fafc90ec0523ae6c3e616691b23f3c51e7f7c36fa16cf734c91d8"
+    },
+    {
+      "path": "app/src/main/res/color-v23/text_input_hint_selector.xml",
+      "size": 327,
+      "sha256": "402bdc3dfc45355d4e2417af3ec0f84cae4bfdb464c93f1538305d89dd358a8c"
+    },
+    {
+      "path": "app/src/main/res/color-v23/text_selection_highlight_selector.xml",
+      "size": 264,
+      "sha256": "8cfbd7f81f210d38af361bc280031920bf6b043aa80a97535fac1bade1a2db3f"
+    },
+    {
+      "path": "app/src/main/res/drawable/bg_icon_ripple.xml",
+      "size": 331,
+      "sha256": "704b7f0022edd16cf9598b01a91064094f18dc3a9ef5e74637f6336c2dbb5bae"
+    },
+    {
+      "path": "app/src/main/res/drawable/bg_row_ripple.xml",
+      "size": 408,
+      "sha256": "12be9856664e53a89e15c10140b5d564c9289638966d50aef0ba0063a2c8749e"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_animation.xml",
+      "size": 560,
+      "sha256": "eef0eece2db8238a61122d47ceb0d9abbc541bcf29103b232c0185d2f1124d5a"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_battery_saver.xml",
+      "size": 465,
+      "sha256": "7ce2e044734e15fc89acc064f1228e6ca5edee7a94d62f85ea92e926e5f70b93"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_bridge_dns_off_white.xml",
+      "size": 747,
+      "sha256": "28e1fcc0078c8de453a7e945899ad53e79f9c4f0a6318f948ddd5694ac2a8cf1"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_bridge_dns_white.xml",
+      "size": 621,
+      "sha256": "9ef415317dc3350e3c534ac9b32673e34fccfa6fe20c73a33b6eace2084a703a"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_bridge_fg_off.xml",
+      "size": 922,
+      "sha256": "4df95edfef22ab6bbb8463984a99e80adad23832552edf7095b60cd7c86323d1"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_bridge_fg_on.xml",
+      "size": 784,
+      "sha256": "fb9dccfb6645f723ab56b07cc59680a899af5a59db5dafb366a4c9a62abb3473"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_code.xml",
+      "size": 425,
+      "sha256": "638b3337b1dc71fa6f422fc71b713a1534476f7711fde6075dbadb2c452a6ab2"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_compare_arrows.xml",
+      "size": 391,
+      "sha256": "f438e731c33cb5eb6e52332ee9a8516457e73db3f0a68f28c4544e07d33b206c"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_copy.xml",
+      "size": 457,
+      "sha256": "5d5ae221ddfdc1bf4ad7c95c33c654405c76b00b899e5270cc08f0419e7a1dfd"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_delete.xml",
+      "size": 412,
+      "sha256": "ea07c323be534befed41a1c39d4d8831705d8acf7c1ab3cc9e88a62c9f11b1d1"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_dns.xml",
+      "size": 665,
+      "sha256": "cfb518da1a7d2171acec0e20a73034d386928cf7b578b0ac206299f160cdf9c7"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_edit.xml",
+      "size": 527,
+      "sha256": "85bfaca7b8be951062f161a9b8c96c035cc423d5a5047d238d189a9d35cf8928"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_expand_less.xml",
+      "size": 365,
+      "sha256": "45e41ae2dff48cd0cf4aa992ba7fd20961dfa3f8bab440d3dc82edb6dce63b32"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_expand_more.xml",
+      "size": 364,
+      "sha256": "a8e7b4f7696d6961082b565488ade32c10243e4ce02302803aa1713fd855dbe6"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_filter_none.xml",
+      "size": 445,
+      "sha256": "5066ef759b5ad9c132d328de96f5513207443fb0d745092798408ef182ed78a7"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_healing.xml",
+      "size": 989,
+      "sha256": "0e66c658db65077c8928850703668d462d9c429f49084d5ede8a4674c1418fcd"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_info.xml",
+      "size": 467,
+      "sha256": "d04f2b6e9b72af66001a46a9522c2f8a9134d6854d066bb7ed7020a550ea3782"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_info_filled.xml",
+      "size": 415,
+      "sha256": "97dedc6adf7a240aa6a04907c6e947cca370573c93041cb361f6487f3fb5e0f5"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_key.xml",
+      "size": 737,
+      "sha256": "ce66947629917ffbe086437f99a025b9a26a849631e14cef3ccea403c2e74141"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_language.xml",
+      "size": 1108,
+      "sha256": "d26dfaf63c1a3f97f8a1424e6a92b1c211bfe2f8249890e05429967b9046fe65"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_list_alt.xml",
+      "size": 530,
+      "sha256": "a6964b3299c1ee7f4930f5b5b321f530f6f0c090e0a7005a74039e335b376623"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_lock_open.xml",
+      "size": 585,
+      "sha256": "64bdaeef719e79894f1e4a3a68ee0aec05975baed2fb1256b29718dec512c98b"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_palette.xml",
+      "size": 1287,
+      "sha256": "2e7b174a4a2500c1983c4a803db95e5da29f9f28ddc568d778b25ca95fab7c76"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_paste.xml",
+      "size": 538,
+      "sha256": "baecac925fe0b2ed4a4cdab9297a7019447d6afaaab92abc642e4458ac15e1ad"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_process.xml",
+      "size": 544,
+      "sha256": "3417d100e14e9d61629d757a62bc3dcdc7a1eaf9ecc538c11053ab7e5585771f"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_settings.xml",
+      "size": 1231,
+      "sha256": "ba36e20bca46c207052806b4be015ecc9acb0acd59688753ed93d9c1a8cfe34f"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_shortcut_bridge_off.xml",
+      "size": 315,
+      "sha256": "6706f25b90c659efcc8cdbe7f3229c13f1511f078e2e3368140a154db335baba"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_shortcut_bridge_on.xml",
+      "size": 313,
+      "sha256": "b81a23190f5b2fca3364cab58adcd5e9fd5aac6c75a5002cd3e1c210b4e5ee35"
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_timelapse.xml",
+      "size": 567,
+      "sha256": "6090aeb3393235afff4b54950fa40d542f503ac612587d1c5d08e28371dc7bb0"
+    },
+    {
+      "path": "app/src/main/res/drawable/revert.xml",
+      "size": 662,
+      "sha256": "9d6fdb868e80fd5d9f821d0354e56d27dd9be07537b63119f11c67fca7f9e16e"
+    },
+    {
+      "path": "app/src/main/res/drawable-anydpi-v26/ic_shortcut_bridge_off.xml",
+      "size": 314,
+      "sha256": "dde28a9092cf4ed23d64257ee94c50ac8c84c43d8a028b1bc11d3c9d5a94eb4e"
+    },
+    {
+      "path": "app/src/main/res/drawable-anydpi-v26/ic_shortcut_bridge_on.xml",
+      "size": 311,
+      "sha256": "6f3dec88bdbdba32a97b68367671c1fd81dd67eac5d28a28458849a7e371d302"
+    },
+    {
+      "path": "app/src/main/res/layout/activity_main.xml",
+      "size": 25722,
+      "sha256": "8660c433f6c06edcb7d85724a3469c3781399819b5bbafd67a33bf843eecf5e5"
+    },
+    {
+      "path": "app/src/main/res/layout/activity_settings.xml",
+      "size": 282,
+      "sha256": "636d03d078a1955dc01fe3813bce6c60e02733a9335fc9023aceef91860c2bee"
+    },
+    {
+      "path": "app/src/main/res/layout/dialog_info.xml",
+      "size": 715,
+      "sha256": "3f7bdfa3142f1a6192d801b8a2815aede97d077e9ae76633fa70b4fe78280ac9"
+    },
+    {
+      "path": "app/src/main/res/layout/dialog_process_response.xml",
+      "size": 1656,
+      "sha256": "b39b4b3e1651bad3187caabe2e7499cb9661659220aa13a719ce02e1967bc80a"
+    },
+    {
+      "path": "app/src/main/res/layout/dialog_process_xray.xml",
+      "size": 1998,
+      "sha256": "833880b68b1cb3bae9611e2cf91d85848941a8b81f06d76e39db36c7ed332bb6"
+    },
+    {
+      "path": "app/src/main/res/layout/dialog_select_option.xml",
+      "size": 3180,
+      "sha256": "992277a164931cd635f795188bb3761f720a52883fa7f3e8934fb205b5dc243f"
+    },
+    {
+      "path": "app/src/main/res/layout/dialog_subscription_identity.xml",
+      "size": 8517,
+      "sha256": "6c103b109d54b02ad3a7c2a0e79b6c5786fea88abd3c582038bdc68d0b330404"
+    },
+    {
+      "path": "app/src/main/res/layout/dialog_theme_select.xml",
+      "size": 5425,
+      "sha256": "2ab614c183be90d5c9c2f11a3d7210e9dff611f36a59f713b6b1671569067d4f"
+    },
+    {
+      "path": "app/src/main/res/layout/fragment_settings.xml",
+      "size": 55925,
+      "sha256": "1ad0945333237da7460ce72e2f29541551eaaa325113b06a6470b9b8bf6c4c7a"
+    },
+    {
+      "path": "app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "size": 334,
+      "sha256": "cee3ff6c73e61072d4f99f71d5311df6de2540630951b0f9fbd4fc4bb010f62f"
+    },
+    {
+      "path": "app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+      "size": 334,
+      "sha256": "cee3ff6c73e61072d4f99f71d5311df6de2540630951b0f9fbd4fc4bb010f62f"
+    },
+    {
+      "path": "app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "size": 2252,
+      "sha256": "5f9ad96a0d0a91d814468f4d0fcc690b386d0372c2b613b58ee5c9918dd36510"
+    },
+    {
+      "path": "app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png",
+      "size": 2565,
+      "sha256": "a1cbb2fb15d14dff6e6bba3278ead6ef42251aeecd39146d2bc60e449445a9f0"
+    },
+    {
+      "path": "app/src/main/res/mipmap-hdpi/ic_launcher_monochrome.png",
+      "size": 2565,
+      "sha256": "a1cbb2fb15d14dff6e6bba3278ead6ef42251aeecd39146d2bc60e449445a9f0"
+    },
+    {
+      "path": "app/src/main/res/mipmap-hdpi/ic_launcher_round.png",
+      "size": 4092,
+      "sha256": "d488c64d2f8e94a4d63418b4ca2c04b2c3521d8d0b566b84c8a74b923d8b82f3"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "size": 3161,
+      "sha256": "5fea70bb87fd13e49b335afc96bbd4d7dbfeea36a034289f9d38b42450539fc2"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png",
+      "size": 3576,
+      "sha256": "7aaece8a4ff1e79b54712e71a2b7f291da6d760f161440eb1d2a111d6b8addd8"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xhdpi/ic_launcher_monochrome.png",
+      "size": 3576,
+      "sha256": "7aaece8a4ff1e79b54712e71a2b7f291da6d760f161440eb1d2a111d6b8addd8"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xhdpi/ic_launcher_round.png",
+      "size": 5763,
+      "sha256": "b18e555099fe1acfad43de15d81c6d150cbbb25e2366164715017e29ac59d622"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "size": 4941,
+      "sha256": "ef7eb42d1a5d14e4658b544d87488ccf63ed1682ed719604c17af70d2598c8a6"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png",
+      "size": 5815,
+      "sha256": "70485f718379380cb4a199dd9578a526441fea7776b280a88ac731b8d1ec94a5"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher_monochrome.png",
+      "size": 5815,
+      "sha256": "70485f718379380cb4a199dd9578a526441fea7776b280a88ac731b8d1ec94a5"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png",
+      "size": 9165,
+      "sha256": "fa2c86593b0ad221a315303cd4691f0cfe68dda7857506a2c1ffea1b48eaa901"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "size": 6797,
+      "sha256": "64611c8cdce3461f84fd873f9e7deea53a03d8da19a066e2afcb558032ed24e1"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
+      "size": 8343,
+      "sha256": "a0ce295de0455fe580f794beb6471f157ba67a7a1b22f21b18ea2668b0ec73d5"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.png",
+      "size": 8343,
+      "sha256": "a0ce295de0455fe580f794beb6471f157ba67a7a1b22f21b18ea2668b0ec73d5"
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png",
+      "size": 12971,
+      "sha256": "17e61f3ebdbf80349eca7887e24be55a392369792f9cf41b0fa677d014510ff1"
+    },
+    {
+      "path": "app/src/main/res/values/arrays.xml",
+      "size": 908,
+      "sha256": "e20847dc39d4dbf92510501856d62b6a7a9fe9b43c793606444c100b30fe36ff"
+    },
+    {
+      "path": "app/src/main/res/values/attrs.xml",
+      "size": 454,
+      "sha256": "2377c56ace4de39908a9bd617b3feb74828e16409b4853c6965104ac87d4877b"
+    },
+    {
+      "path": "app/src/main/res/values/colors.xml",
+      "size": 1134,
+      "sha256": "c630df5287b1c992d516df5b16b30ccaf7eb9cb7c7e53773bc6f3aa30a421d2d"
+    },
+    {
+      "path": "app/src/main/res/values/device_profiles.xml",
+      "size": 1736,
+      "sha256": "161e91ac44b804cc62ec4abd56eb5d7918595d52e5a3482543b91d1379a31798"
+    },
+    {
+      "path": "app/src/main/res/values/dimens.xml",
+      "size": 1781,
+      "sha256": "3fa85f43a19345dbfddc2018efe28fcdbc3a71d246d2d99cc79118bc1218de2c"
+    },
+    {
+      "path": "app/src/main/res/values/ic_launcher_background.xml",
+      "size": 121,
+      "sha256": "d3b2078572f9b23a8f2a6a3b3667c8ff8a24151f96cc56619ddd37d2495ac93a"
+    },
+    {
+      "path": "app/src/main/res/values/ids.xml",
+      "size": 263,
+      "sha256": "f3f476a3a5eb8a8f5342b34a742c4a16f8aafa4a5404e79f29d04319cab9ab80"
+    },
+    {
+      "path": "app/src/main/res/values/integers.xml",
+      "size": 567,
+      "sha256": "e1d5e8d71276c9c977f2fc4ca2b4ac5b7d292a53221ae92a1ecfabb03cf2079b"
+    },
+    {
+      "path": "app/src/main/res/values/plurals.xml",
+      "size": 298,
+      "sha256": "4f3f7f5d94a209c34c4f881bbc15172ec9b0dcfbcf09c0e214c77b8ab8013445"
+    },
+    {
+      "path": "app/src/main/res/values/strings.xml",
+      "size": 16467,
+      "sha256": "cb31ae3384c6df758816f4fc61202ae52c4ecc9bbbcab50d6abc113d011659aa"
+    },
+    {
+      "path": "app/src/main/res/values/themes.xml",
+      "size": 8491,
+      "sha256": "2ec8facd439e55c78d1dba83c6d4e40bb18a2bc1a469e3a76e7bb9082521c817"
+    },
+    {
+      "path": "app/src/main/res/values-night/colors.xml",
+      "size": 926,
+      "sha256": "36855cdc66487fe2c9ffa15b0f0540473066754851209243d01f2de8ef358e2b"
+    },
+    {
+      "path": "app/src/main/res/values-night/themes.xml",
+      "size": 922,
+      "sha256": "82aeb5beeb3f89f6729d9a81bf256205c698e3cda94acef3eb7ebbabf997ff1a"
+    },
+    {
+      "path": "app/src/main/res/values-ru/arrays.xml",
+      "size": 803,
+      "sha256": "3299cf364d06d9593bc7c6a69b57f7183080762d8ba7acaeaa6d08db0eef86a8"
+    },
+    {
+      "path": "app/src/main/res/values-ru/device_profiles.xml",
+      "size": 2268,
+      "sha256": "c13b90f7cafbd9d799624b61dccaecd8be9cca072a4bd68b6b97f01cc25c87ef"
+    },
+    {
+      "path": "app/src/main/res/values-ru/plurals.xml",
+      "size": 600,
+      "sha256": "435b88c0a15d596a105618a8c1aca7a9f4088652eb3ac23fc0911ec95fce6802"
+    },
+    {
+      "path": "app/src/main/res/values-ru/strings.xml",
+      "size": 21143,
+      "sha256": "97919fc2095ddbdf8e7c7148e27b25134ca55af5c1a3dd4aa4a86dbcecf361dd"
+    },
+    {
+      "path": "app/src/main/resources/META-INF/xposed/java_init.list",
+      "size": 32,
+      "sha256": "c66bc8ffd6a541c3475d5adf647e5dcf9a116b94615069e16e9998fe8932ae61"
+    },
+    {
+      "path": "app/src/main/resources/META-INF/xposed/module.prop",
+      "size": 102,
+      "sha256": "47ba34f1f70c39cea23f50ba56a547ce96e40a3a44db2894154f2453ed2c51b3"
+    },
+    {
+      "path": "app/src/main/resources/META-INF/xposed/scope.list",
+      "size": 71,
+      "sha256": "2cd91b44b14e2fb3b2538cc15098e873b4f6bfcc741a5603b9d8c3a7f134da8d"
+    },
+    {
+      "path": "app/src/test/java/com/happwner/IdentityCodecTest.kt",
+      "size": 2836,
+      "sha256": "69fc5828e65d8d1b94ae3ff380ed4986f6f18b546b03de4c5ec799b603b91992"
+    },
+    {
+      "path": "app/src/test/java/com/happwner/RequestIdentityTest.kt",
+      "size": 5790,
+      "sha256": "b403ed8cf82da1121c12cfae1d576024bf5cc417903b62c087e3372c2ec273c9"
+    },
+    {
+      "path": "app/src/test/java/com/happwner/hooks/HookInvocationTest.kt",
+      "size": 6231,
+      "sha256": "ed47e6f5a02cec57213417e3cd6ef2a56038d2c22974e7ce128f365f4bd4c914"
+    },
+    {
+      "path": "build.gradle.kts",
+      "size": 167,
+      "sha256": "5dad2d59c54beb7d7801e06e1c795456d1bea58c0ccbeddfce159cd8f58c2fa8"
+    },
+    {
+      "path": "docs/phase1/CHECKS.txt",
+      "size": 1140,
+      "sha256": "7c7021b9538288d151c121f07dd2c7c9316e3177438031ef851800c84334fdb7"
+    },
+    {
+      "path": "docs/phase1/CONTINUE_RU.md",
+      "size": 8142,
+      "sha256": "0dd70890326fc9a75440bbe09a8a931b2de303c37c87cafba20ed61397078de2"
+    },
+    {
+      "path": "docs/phase1/SOURCE_INFO.txt",
+      "size": 357,
+      "sha256": "ba9d284cb8a9262f163726be427250cb5ebdd6143f48bca40f772ca6aef681c0"
+    },
+    {
+      "path": "docs/phase1/SOURCE_MANIFEST.json",
+      "size": 21389,
+      "sha256": "07b4d422b5671d79a5a072e84e9a13d8e93e5766ee009113571f6a1d40869068"
+    },
+    {
+      "path": "docs/research/2026-10-18_technical-review.md",
+      "size": 3192,
+      "sha256": "9af0be94eb4f21e38e56c505e77cbc9b4eff72ddd3030a45f70160b60d0bc57c"
+    },
+    {
+      "path": "docs/research/plan.md",
+      "size": 3467,
+      "sha256": "e08d837cb56624e14e680fce0e6bf094ccb5922a9d21331df06ba2e35d9aa3fc"
+    },
+    {
+      "path": "docs/research/refresh_targets.md",
+      "size": 710,
+      "sha256": "79eca1b2c960ef45d3078664891333df5545d3bcac57ca4bff09259f110278d3"
+    },
+    {
+      "path": "docs/research/sources/01-libxposed-readme.md",
+      "size": 710,
+      "sha256": "14c94757f1036cb844cbd72a4ca5609cda9f88c860117be69a9589dd80764e23"
+    },
+    {
+      "path": "docs/research/sources/02-libxposed-build.md",
+      "size": 735,
+      "sha256": "51a49b16d8e55d6af31647b7d92031b3f84c6728843f7896c87365c5d4489512"
+    },
+    {
+      "path": "docs/research/sources/03-libxposed-interface.md",
+      "size": 912,
+      "sha256": "b2cf169dad5b9238a63e34cd38879fe70e35a17c226b1abcac453ae08d3fa597"
+    },
+    {
+      "path": "docs/research/sources/04-libxposed-module.md",
+      "size": 757,
+      "sha256": "69581c0883ee5034afeb577b9e082e0ec9766df8959713d54d697079d5ba7ada"
+    },
+    {
+      "path": "docs/research/sources/05-vector-lifecycle.md",
+      "size": 925,
+      "sha256": "f5c6239ad45ad67aac48dc80cb99c85aee72f49152403e1a739228065ee04b9d"
+    },
+    {
+      "path": "docs/research/sources/06-lsposed-guide.md",
+      "size": 753,
+      "sha256": "033c67ef270b96318306199eb84c2644840fccf3e278ee6044d5122910ffd6b1"
+    },
+    {
+      "path": "docs/research/sources/07-happ-docs.md",
+      "size": 654,
+      "sha256": "342b27c1cc95e896639399396ccaa902d826b0acd5fd003e0733f79d92e6eb65"
+    },
+    {
+      "path": "docs/research/sources/08-xtls-header-proposal.md",
+      "size": 913,
+      "sha256": "182479dd99c6a986be0605c790ab10abfbc874533573c5d2d1c32d92560592ab"
+    },
+    {
+      "path": "docs/research/sources/09-happwner-terms.md",
+      "size": 610,
+      "sha256": "53e522f3ea5d2ab7f13e9bd3dfaa389c92503893c50b2ce961301835c98e6d31"
+    },
+    {
+      "path": "docs/research/sources/10-hiddify-ua.md",
+      "size": 654,
+      "sha256": "d286a16e829e0fb1f5cef35e73c83fcba65f69ed08f3d8f91293f8a5bdb4568e"
+    },
+    {
+      "path": "docs/research/sources/11-v2rayng-ua.md",
+      "size": 551,
+      "sha256": "b7715ef8eeca69666bbe8c45abee95e7625c59cce01c458440784363d2fa9926"
+    },
+    {
+      "path": "docs/research/sources/12-nekobox-ua.md",
+      "size": 728,
+      "sha256": "2632a5254181f816918737c07510ccef419b812c8a06fab01d897c697d6ddcae"
+    },
+    {
+      "path": "docs/research/sources.csv",
+      "size": 2415,
+      "sha256": "77e173c67cf0720e1d88fdecefe1004e5e776d06d2ea1fca2dd8b78794c73f91"
+    },
+    {
+      "path": "docs/review/2026-10-18-static-review-ru.md",
+      "size": 9794,
+      "sha256": "7e58415ce230ee4f64f24ceceb6f46fd52f0ee116778799ab7cf540acd38e4a4"
+    },
+    {
+      "path": "docs/review/CHECKS.txt",
+      "size": 673,
+      "sha256": "d30702a01721db43e6bf40c094baf5ece930c045c83117df25925beb871962a3"
+    },
+    {
+      "path": "docs/review/SOURCE_INFO.txt",
+      "size": 434,
+      "sha256": "bec8d46a56fd3386e1f77e24a53b883d79b89ba0e456e4722502189f1b032dc6"
+    },
+    {
+      "path": "gradle/gradle-daemon-jvm.properties",
+      "size": 1138,
+      "sha256": "231649d2f8e8dc24310f18c921e3ae33fd2715b7f48a7ddcaf27a85003e0729a"
+    },
+    {
+      "path": "gradle/libs.versions.toml",
+      "size": 2506,
+      "sha256": "5fdc65e2af616cdbe081b8883d5b03509df816aea55799b23773d7510eac8e12"
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.jar",
+      "size": 45457,
+      "sha256": "76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3"
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "size": 369,
+      "sha256": "8d092fcfb7ad73a4a5a825d67d76bb40fc6af66d94bf927090505496bac9c6a3"
+    },
+    {
+      "path": "gradle.properties",
+      "size": 239,
+      "sha256": "bd0fbd73cde0f8f24acb4bc86a04e245c8c5c9a631204717cb1a302ffc59a96c"
+    },
+    {
+      "path": "gradlew",
+      "size": 8728,
+      "sha256": "3238afb2aed5cb16eb7d6718077e7138059108f007b54179e9cc157c5a6e0e89"
+    },
+    {
+      "path": "gradlew.bat",
+      "size": 2843,
+      "sha256": "94102713eb8fb22d032397924c0f38ab2da783ba60d07054339f1190a0c4e2cd"
+    },
+    {
+      "path": "settings.gradle.kts",
+      "size": 675,
+      "sha256": "4a2f54d57993ac2e496240f2b3e628887c8b1e4d14a0d3e88d6202b506ffb725"
+    }
+  ]
+}

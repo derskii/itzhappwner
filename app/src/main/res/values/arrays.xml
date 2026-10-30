@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="lspatch_mode_options">
+        <item>Default</item>
+        <item>Enabled</item>
+        <item>Disabled</item>
+    </string-array>
+
+    <string-array name="theme_options">
+        <item>System</item>
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Black</item>
+    </string-array>
+
+    <string-array name="animation_options">
+        <item>Off</item>
+        <item>System</item>
+        <item>Software</item>
+    </string-array>
+
+    <string-array name="language_options">
+        <item>System</item>
+        <item>Русский</item>
+        <item>English</item>
+    </string-array>
+
+    <string-array name="xposed_scope">
+        <item>com.happproxy</item>
+        <item>su.happ.proxyutility</item>
+        <item>com.v2raytun.android</item>
+        <item>llc.itdev.incy</item>
+    </string-array>
+</resources>

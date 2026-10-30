@@ -1,0 +1,22 @@
+<resources>
+    <string name="device_profile_choose">Choose request device</string>
+    <string name="device_profile_button_off">Device profile: manual settings</string>
+    <string name="device_profile_button_on">%1$s %2$s · %3$s</string>
+    <string name="device_profile_manual">Custom profile…</string>
+    <string name="device_profile_disable">Disable device override</string>
+    <string name="device_profile_presets">Choose a preset</string>
+    <string name="device_profile_ua">Client User-Agent (version is editable)</string>
+    <string name="device_profile_apply">Apply profile</string>
+    <string name="device_profile_help">OS/model are sent only when the custom schema is enabled. This preview shows overrides; other headers, including a UA without an override, come from the original client or HTTP library. HWID stays unchanged until explicitly replaced.</string>
+    <string name="device_profile_windows11">Windows 11 · PC</string>
+    <string name="device_profile_windows10">Windows 10 · PC</string>
+    <string name="device_profile_linux">Linux · Ubuntu 24.04</string>
+    <string name="device_profile_android">Android 16 · Pixel 9</string>
+    <string name="device_profile_ios">iOS 18 · iPhone 15 Pro</string>
+    <string name="device_profile_macos">macOS 15 · MacBook Air</string>
+    <string name="device_profile_hwid">HWID for this profile</string>
+    <string name="device_profile_generate_hwid">Generate a new HWID</string>
+    <string name="device_profile_preview_title">Header overrides</string>
+    <string name="device_profile_delete">Delete saved profile</string>
+    <string name="device_profile_delete_builtin">Built-in presets cannot be deleted. Save your own edited copy.</string>
+</resources>

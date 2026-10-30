@@ -1,0 +1,8 @@
+Happwner API 102 source snapshot
+Date: 2026-10-19
+Branch: api102-device-profiles
+Base commit: e439dd8acf8cb31f6e99296824e07ccb8939dcd9
+
+Contains project source, resources, test source, Gradle configuration, and review notes.
+Excludes Git metadata, local.properties, build outputs/caches, APK/AAB files, and signing keystores.
+A debug build was attempted but Gradle 9.3.1 could not be downloaded because network access is unavailable.

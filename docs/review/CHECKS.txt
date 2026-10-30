@@ -1,0 +1,9 @@
+Static checks: passed.
+- git diff --check.
+- Parsed all 81 XML files under app/src/main.
+- No duplicate string/plural/string-array names in base or Russian strings.xml.
+- No references remain to the removed SETTINGS_REQUEST receiver or obsolete untrusted capture helpers.
+- Both IdentityCodec.bridgeUrl call sites pass the stored bridge token.
+
+Build: bash gradlew :app:assembleDebug stopped before Gradle started because the wrapper could not download Gradle 9.3.1 (Network is unreachable). No compilation or tests ran. The APK already in app/build predates the latest source edits and is excluded.
+See 2026-10-18-static-review-ru.md for findings and runtime limitations.

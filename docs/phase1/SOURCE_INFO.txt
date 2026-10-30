@@ -1,0 +1,6 @@
+Base repository: https://github.com/Omegaplexx/Happwner
+Base commit: e439dd8acf8cb31f6e99296824e07ccb8939dcd9
+Local branch: api102-device-profiles
+Uncommitted prior work plus stage-1 changes included. No publication.
+Archive includes source, tests, and research/audit checkpoint.
+No APK, build caches, local signing settings or private screenshot included.
