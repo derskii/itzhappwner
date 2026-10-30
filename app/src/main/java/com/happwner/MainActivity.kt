@@ -798,7 +798,7 @@ class MainActivity : AppCompatActivity() {
                     val raw = newSubscriptionFile().also { rawFile = it }
                     val response = SubscriptionHttp.getToFile(urlString, requestIdentity, raw)
                     if (!response.isSuccessful) throw java.io.IOException(response.error ?: "HTTP ${response.statusCode}")
-                    val processed = processSubscriptionFile(raw, urlString, response.headers)
+                    val processed = processSubscriptionFile(raw, urlString, response.headers) { processedFile = it }
                     processedFile = processed.first
                     if (gen != fetchGeneration || inputUrl.text.toString().trim() != activeFetchUrl) return@launch
                     showFileResult(processed.first, processed.second)
@@ -1298,7 +1298,7 @@ class MainActivity : AppCompatActivity() {
                         val source = contentResolver.openInputStream(uri) ?: throw java.io.IOException("Cannot open file")
                         source.use { input -> raw.outputStream().use { SubscriptionFiles.copyCapped(input, it) } }
                     }
-                    val processed = processSubscriptionFile(raw, null, emptyMap())
+                    val processed = processSubscriptionFile(raw, null, emptyMap()) { processedFile = it }
                     processedFile = processed.first
                     if (gen == fetchGeneration) showFileResult(processed.first, processed.second)
                 } catch (e: CancellationException) { throw e }
@@ -1323,7 +1323,7 @@ class MainActivity : AppCompatActivity() {
         exportSubscriptionLauncher.launch("Happwner-subscription.$extension")
     }
 
-    private suspend fun processSubscriptionFile(raw: File, url: String?, headers: Map<String, List<String>>): Pair<File, String?> {
+    private suspend fun processSubscriptionFile(raw: File, url: String?, headers: Map<String, List<String>>, onOutput: (File) -> Unit): Pair<File, String?> {
         val jsonToUri = prefs.getBoolean("process_manual", true)
         val tryBase64 = prefs.getBoolean("process_b64_manual", true)
         val xrayToSb = prefs.getBoolean("process_xray_manual", false)
@@ -1334,7 +1334,7 @@ class MainActivity : AppCompatActivity() {
                     if (raw.length() > SubscriptionFiles.MAX_PROCESS_BYTES) {
                         val encrypted = headers.keys.any { it.equals("Encrypt-Tag", true) }
                         if (!jsonToUri || encrypted) return@withLock raw to getString(R.string.msg_file_raw_large)
-                        val file = newSubscriptionFile()
+                        val file = newSubscriptionFile().also(onOutput)
                         val skipped = try { SubscriptionFiles.convertJsonFile(raw, file, xrayToSb) { processingContext.ensureActive() } }
                         catch (e: Exception) { file.delete(); throw e }
                         val note = if (skipped > 0) resources.getQuantityString(R.plurals.msg_xray_skipped, skipped, skipped) else null
@@ -1347,7 +1347,7 @@ class MainActivity : AppCompatActivity() {
                         else -> body
                     }
                     val stats = LinkConverter.convertWithStats(plaintext, jsonToUri, tryBase64, xrayToSb)
-                    val file = newSubscriptionFile()
+                    val file = newSubscriptionFile().also(onOutput)
                     try { file.writeText(stats.text, Charsets.UTF_8) }
                     catch (e: Exception) { file.delete(); throw e }
                     val notes = mutableListOf<String>()
