@@ -182,6 +182,7 @@ object LinkConverter {
     // true if the whole string is one valid JSON value (no trailing junk)
     private fun isWholeJsonValue(s: String): Boolean {
         return try {
+            JsonSubscriptionStream.checkNesting(s)
             val t = JSONTokener(s)
             t.nextValue()
             t.nextClean().code == 0

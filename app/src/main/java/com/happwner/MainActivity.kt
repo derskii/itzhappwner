@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity() {
     private var resultFile: File? = null
     private var resultNote: String? = null
     private var pendingExportFile: File? = null
+    private var activeExportFile: File? = null
     private var responsePreview: String = ""
     private val MAX_DISPLAY_CHARS by lazy { resources.getInteger(R.integer.max_display_chars) }
     private var lastFetchTapMs = 0L
@@ -573,8 +574,7 @@ class MainActivity : AppCompatActivity() {
         btnClearOutput.setOnClickListener {
             cancelActiveFetch()
             mainContainer.beginDelayedTransitionIfEnabled(fastTransition)
-            resultFile = null
-            responsePreview = ""
+            discardResultFile()
             output.animate().cancel()
             output.alpha = 1f
             hideWaitLabel()
@@ -784,8 +784,7 @@ class MainActivity : AppCompatActivity() {
             cancelActiveFetch()
             val gen = ++fetchGeneration
             activeFetchUrl = urlString.trim()
-            resultFile = null
-            responsePreview = ""
+            discardResultFile()
             hideWaitLabel()
 
             output.animate().cancel()
@@ -1244,6 +1243,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun newSubscriptionFile(): File = File.createTempFile("subscription-", ".txt", subscriptionDirectory())
 
+    private fun discardResultFile() {
+        val previous = resultFile
+        resultFile = null
+        resultNote = null
+        responsePreview = ""
+        if (previous != pendingExportFile && previous != activeExportFile) previous?.delete()
+    }
+
     private fun restoreSubscriptionFile(name: String?): File? = name
         ?.takeIf { it.startsWith("subscription-") && it == File(it).name }
         ?.let { File(subscriptionDirectory(), it) }?.takeIf { it.isFile }
@@ -1253,7 +1260,9 @@ class MainActivity : AppCompatActivity() {
     ) { uri ->
         val source = pendingExportFile
         pendingExportFile = null
+        if (uri == null && source != resultFile) source?.delete()
         if (uri != null && source != null) lifecycleScope.launch {
+            activeExportFile = source
             try {
                 withContext(Dispatchers.IO) {
                     val destination = contentResolver.openOutputStream(uri, "wt")
@@ -1264,6 +1273,9 @@ class MainActivity : AppCompatActivity() {
             } catch (e: CancellationException) { throw e }
             catch (e: Exception) {
                 Toast.makeText(this@MainActivity, getString(R.string.error_file, e.javaClass.simpleName), Toast.LENGTH_LONG).show()
+            } finally {
+                activeExportFile = null
+                if (source != resultFile && source != pendingExportFile) source.delete()
             }
         }
     }
@@ -1274,8 +1286,7 @@ class MainActivity : AppCompatActivity() {
         if (uri != null) {
             cancelActiveFetch()
             val gen = ++fetchGeneration
-            resultFile = null
-            responsePreview = ""
+            discardResultFile()
             output.animate().cancel()
             showOutputText(getString(R.string.msg_loading))
             activeFetchJob = lifecycleScope.launch {
@@ -1301,6 +1312,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveResultToFile() {
+        if (pendingExportFile != null || activeExportFile != null) return
         val file = resultFile
         if (file == null || !file.isFile) {
             Toast.makeText(this, R.string.msg_no_result, Toast.LENGTH_SHORT).show()
@@ -2101,7 +2113,7 @@ class MainActivity : AppCompatActivity() {
         fetchGeneration++
         if (job?.isActive == true) {
             job.cancel()
-                if (::output.isInitialized && output.text == getString(R.string.msg_loading)) {
+            if (::output.isInitialized && output.text == getString(R.string.msg_loading)) {
                 setHtmlText(output, R.string.label_result_default)
                 output.setTextIsSelectable(false)
             }

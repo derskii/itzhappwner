@@ -416,7 +416,6 @@ class SubscriptionService : Service() {
         302 -> "Found"
         303 -> "See Other"
         304 -> "Not Modified"
-        413 -> "Content Too Large"
         400 -> "Bad Request"
         401 -> "Unauthorized"
         404 -> "Not Found"
