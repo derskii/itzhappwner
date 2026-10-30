@@ -230,6 +230,7 @@ class SubscriptionService : Service() {
         scope.launch {
             var rawFile: File? = null
             var convertedFile: File? = null
+            var plaintextFile: File? = null
             try {
                 val line = readRequestLine(socket)
                 val output = socket.getOutputStream()
@@ -287,37 +288,28 @@ class SubscriptionService : Service() {
                     return@launch
                 }
                 val prefs = PrefsManager.getSafePrefs(this@SubscriptionService)
-                val jsonToUri = prefs.getBoolean("process_server", false)
-                val tryB64 = prefs.getBoolean("process_b64_server", false)
-                val xrayToSb = prefs.getBoolean("process_xray_server", false)
-
+                val format = SubscriptionFormat.read(prefs, bridge = true)
+                val tryB64 = prefs.getBoolean("process_b64_server", true)
                 val finalFile = SubscriptionFiles.processingMutex.withLock {
-                    val encrypted = response.headers.keys.any { it.equals("Encrypt-Tag", true) }
-                    if (raw.length() > SubscriptionFiles.MAX_PROCESS_BYTES) {
-                        if (encrypted) {
-                            sendError(output, 413, "Encrypted response exceeds the conversion limit; save the original to a file in Happwner")
+                    var input = raw
+                    if (response.headers.keys.any { it.equals("Encrypt-Tag", true) }) {
+                        if (raw.length() > SubscriptionFiles.MAX_PROCESS_BYTES) {
+                            sendError(output, 413, "Encrypted response exceeds the decryption limit")
                             return@launch
                         }
-                        if (!jsonToUri) return@withLock raw
-                        val converted = File.createTempFile("bridge-converted-", ".txt", cacheDir)
-                        convertedFile = converted
-                        val processingContext = coroutineContext
-                        SubscriptionFiles.convertJsonFile(raw, converted, xrayToSb) { processingContext.ensureActive() }
-                        return@withLock converted
-                    }
-                    val body = raw.readText(Charsets.UTF_8)
-                    val finalBody = when (val r = HappCrypto.process(targetUrl, body, response.headers)) {
-                        is HappCrypto.Result.Success -> LinkConverter.convert(r.plaintext, jsonToUri, tryB64, xrayToSb)
-                        is HappCrypto.Result.Failed -> {
-                            showDecryptErrorToast(r.keyName, r.reason)
-                            LinkConverter.convert(r.originalBody, jsonToUri, tryB64, xrayToSb)
+                        when (val r = HappCrypto.process(targetUrl, raw.readText(), response.headers)) {
+                            is HappCrypto.Result.Success -> {
+                                input = File.createTempFile("bridge-plaintext-", ".txt", cacheDir).also { plaintextFile = it }
+                                input.writeText(r.plaintext)
+                            }
+                            is HappCrypto.Result.Failed -> throw java.io.IOException("Subscription decryption failed")
+                            HappCrypto.Result.NotEncrypted -> Unit
                         }
-                        HappCrypto.Result.NotEncrypted -> LinkConverter.convert(body, jsonToUri, tryB64, xrayToSb)
                     }
-                    val converted = File.createTempFile("bridge-converted-", ".txt", cacheDir)
-                    convertedFile = converted
-                    converted.writeText(finalBody, Charsets.UTF_8)
-                    converted
+                    val processingContext = coroutineContext
+                    SubscriptionOutput.process(input, format, tryB64, {
+                        File.createTempFile("bridge-converted-", ".txt", cacheDir).also { convertedFile = it }
+                    }, { processingContext.ensureActive() }).file
                 }
                 sendResponse(output, response.statusCode, finalFile, response.headers)
             } catch (e: CancellationException) {
@@ -329,6 +321,7 @@ class SubscriptionService : Service() {
             } finally {
                 rawFile?.delete()
                 convertedFile?.delete()
+                plaintextFile?.delete()
                 activeClients.remove(socket)
                 clientSlots.release()
                 try { socket.close() } catch (_: Exception) {}

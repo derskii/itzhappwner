@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag (must match versionName)
         required: true
-        default: v1.3.3-api102
+        default: v1.3.4-api102
 
 permissions:
   contents: write
@@ -60,7 +60,7 @@ jobs:
       - name: Verify APK and prepare checksums
         run: |
           mkdir -p dist
-          test "$RELEASE_TAG" = v1.3.3-api102
+          test "$RELEASE_TAG" = v1.3.4-api102
           cp app/build/outputs/apk/release/app-release.apk "dist/Happwner-$RELEASE_TAG.apk"
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose dist/*.apk
           cd dist
@@ -72,7 +72,7 @@ jobs:
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$RELEASE_TAG" dist/* --target "$GITHUB_SHA" --title "Happwner $RELEASE_TAG" --notes-file docs/releases/v1.3.3-api102.md
+        run: gh release create "$RELEASE_TAG" dist/* --target "$GITHUB_SHA" --title "Happwner $RELEASE_TAG" --notes-file docs/releases/v1.3.4-api102.md
       - name: Remove signing files
         if: always()
         run: rm -f local.properties "$RUNNER_TEMP/happwner-release.jks"

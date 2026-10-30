@@ -95,6 +95,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnPasteUrlManual: ImageButton
 
     // Only a bounded preview is held by the Activity. The complete result stays on disk.
+    private var sourceResponseFile: File? = null
+    private var sourceResponseUrl: String? = null
+    private var sourceResponseHeaders: Map<String, List<String>> = emptyMap()
+    private var resultFormat: SubscriptionFormat? = null
     private var resultFile: File? = null
     private var resultNote: String? = null
     private var pendingExportFile: File? = null
@@ -330,6 +334,10 @@ class MainActivity : AppCompatActivity() {
         output.isSaveEnabled = false
         resultFile = restoreSubscriptionFile(savedInstanceState?.getString("result_file"))
         resultNote = savedInstanceState?.getString("result_note")
+        sourceResponseFile = restoreSubscriptionFile(savedInstanceState?.getString("source_file"))
+        sourceResponseUrl = savedInstanceState?.getString("source_url")
+        savedInstanceState?.getString("source_encrypt_tag")?.let { sourceResponseHeaders = mapOf("Encrypt-Tag" to listOf(it)) }
+        resultFormat = savedInstanceState?.getString("result_format")?.let { runCatching { SubscriptionFormat.valueOf(it) }.getOrNull() }
         pendingExportFile = restoreSubscriptionFile(savedInstanceState?.getString("export_file"))
         outputWaitLabel = findViewById(R.id.outputWaitLabel)
         // Swallow touches on the result only while the wait label is shown, so the invisible text can't be selected
@@ -368,14 +376,22 @@ class MainActivity : AppCompatActivity() {
         // Paste / edit-toggle buttons for the URL, HWID and UA fields
         btnPasteUrlManual.setOnClickListener { handlePasteUrl() }
         btnEditHwidManual.setOnClickListener {
-            if (DeviceProfiles.active(this) != null) { showDeviceProfileDialog(); return@setOnClickListener }
-            val isModuleActive = ModuleStatus.isModuleActive() || getSafePrefs(this).getBoolean("lspatch_mode", false)
-            if (isModuleActive) {
-                handleToggleHwidEdit(!inputHwid.isEnabled)
-            } else {
-                handlePasteHwid()
-            }
+            ProfileDialogs.showHwidEditor(this) { updateUiState() }
         }
+        findViewById<View>(R.id.btnOutputFormat).setOnClickListener {
+            val formats = SubscriptionFormat.entries
+            val labels = resources.getStringArray(R.array.subscription_output_formats)
+            val chooser = AnimatedDialogBuilder(this)
+            chooser.setTitle(getString(R.string.output_format_title))
+            chooser.setSingleChoiceItems(labels, formats.indexOf(SubscriptionFormat.read(prefs))) { dialog, index ->
+                SubscriptionFormat.save(prefs, formats[index])
+                updateOutputFormatButton()
+                dialog.dismiss()
+                reprocessCurrentSource()
+            }
+            chooser.showAnimated()
+        }
+        updateOutputFormatButton()
         btnEditUaManual.setOnClickListener { showUaSelectDialog() }
 
         val blockEnterFilter = InputFilter { source, _, _, _, _, _ ->
@@ -575,6 +591,7 @@ class MainActivity : AppCompatActivity() {
             cancelActiveFetch()
             mainContainer.beginDelayedTransitionIfEnabled(fastTransition)
             discardResultFile()
+            discardSourceFile()
             output.animate().cancel()
             output.alpha = 1f
             hideWaitLabel()
@@ -785,6 +802,7 @@ class MainActivity : AppCompatActivity() {
             val gen = ++fetchGeneration
             activeFetchUrl = urlString.trim()
             discardResultFile()
+            discardSourceFile()
             hideWaitLabel()
 
             output.animate().cancel()
@@ -798,6 +816,9 @@ class MainActivity : AppCompatActivity() {
                     val raw = newSubscriptionFile().also { rawFile = it }
                     val response = SubscriptionHttp.getToFile(urlString, requestIdentity, raw)
                     if (!response.isSuccessful) throw java.io.IOException(response.error ?: "HTTP ${response.statusCode}")
+                    sourceResponseFile = raw
+                    sourceResponseUrl = urlString
+                    sourceResponseHeaders = response.headers.filterKeys { it.equals("Encrypt-Tag", true) }
                     val processed = processSubscriptionFile(raw, urlString, response.headers) { processedFile = it }
                     processedFile = processed.first
                     if (gen != fetchGeneration || inputUrl.text.toString().trim() != activeFetchUrl) return@launch
@@ -806,8 +827,8 @@ class MainActivity : AppCompatActivity() {
                 catch (e: Exception) {
                     if (gen == fetchGeneration) showFetchError(e)
                 } finally {
-                    rawFile?.takeIf { it != resultFile }?.delete()
-                    processedFile?.takeIf { it != resultFile }?.delete()
+                    rawFile?.takeIf { it != resultFile && it != sourceResponseFile }?.delete()
+                    processedFile?.takeIf { it != resultFile && it != sourceResponseFile }?.delete()
                     if (gen == fetchGeneration) activeFetchUrl = null
                 }
             }
@@ -961,6 +982,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        sourceResponseFile?.let { outState.putString("source_file", it.name) }
+        sourceResponseUrl?.let { outState.putString("source_url", it) }
+        sourceResponseHeaders.values.firstOrNull()?.firstOrNull()?.let { outState.putString("source_encrypt_tag", it) }
+        resultFormat?.let { outState.putString("result_format", it.name) }
         resultFile?.let { outState.putString("result_file", it.name) }
         resultNote?.let { outState.putString("result_note", it) }
         pendingExportFile?.let { outState.putString("export_file", it.name) }
@@ -1248,7 +1273,36 @@ class MainActivity : AppCompatActivity() {
         resultFile = null
         resultNote = null
         responsePreview = ""
-        if (previous != pendingExportFile && previous != activeExportFile) previous?.delete()
+        if (previous != pendingExportFile && previous != activeExportFile && previous != sourceResponseFile) previous?.delete()
+    }
+
+    private fun discardSourceFile() {
+        val previous = sourceResponseFile
+        sourceResponseFile = null
+        sourceResponseUrl = null
+        sourceResponseHeaders = emptyMap()
+        resultFormat = null
+        if (previous != resultFile && previous != pendingExportFile && previous != activeExportFile) previous?.delete()
+    }
+
+    private fun reprocessCurrentSource() {
+        val raw = sourceResponseFile ?: return
+        val url = sourceResponseUrl
+        val headers = sourceResponseHeaders
+        cancelActiveFetch()
+        val gen = ++fetchGeneration
+        discardResultFile()
+        showOutputText(getString(R.string.msg_loading))
+        activeFetchJob = lifecycleScope.launch {
+            var candidate: File? = null
+            try {
+                val result = processSubscriptionFile(raw, url, headers) { candidate = it }
+                candidate = result.first
+                if (gen == fetchGeneration) showFileResult(result.first, result.second)
+            } catch (e: CancellationException) { throw e }
+            catch (e: Exception) { if (gen == fetchGeneration) showFetchError(e) }
+            finally { candidate?.takeIf { it != resultFile && it != sourceResponseFile }?.delete() }
+        }
     }
 
     private fun restoreSubscriptionFile(name: String?): File? = name
@@ -1260,7 +1314,7 @@ class MainActivity : AppCompatActivity() {
     ) { uri ->
         val source = pendingExportFile
         pendingExportFile = null
-        if (uri == null && source != resultFile) source?.delete()
+        if (uri == null && source != resultFile && source != sourceResponseFile) source?.delete()
         if (uri != null && source != null) lifecycleScope.launch {
             activeExportFile = source
             try {
@@ -1275,7 +1329,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity, getString(R.string.error_file, e.javaClass.simpleName), Toast.LENGTH_LONG).show()
             } finally {
                 activeExportFile = null
-                if (source != resultFile && source != pendingExportFile) source.delete()
+                if (source != resultFile && source != pendingExportFile && source != sourceResponseFile) source.delete()
             }
         }
     }
@@ -1287,6 +1341,7 @@ class MainActivity : AppCompatActivity() {
             cancelActiveFetch()
             val gen = ++fetchGeneration
             discardResultFile()
+            discardSourceFile()
             output.animate().cancel()
             showOutputText(getString(R.string.msg_loading))
             activeFetchJob = lifecycleScope.launch {
@@ -1298,14 +1353,17 @@ class MainActivity : AppCompatActivity() {
                         val source = contentResolver.openInputStream(uri) ?: throw java.io.IOException("Cannot open file")
                         source.use { input -> raw.outputStream().use { SubscriptionFiles.copyCapped(input, it) } }
                     }
+                    sourceResponseFile = raw
+                    sourceResponseUrl = null
+                    sourceResponseHeaders = emptyMap()
                     val processed = processSubscriptionFile(raw, null, emptyMap()) { processedFile = it }
                     processedFile = processed.first
                     if (gen == fetchGeneration) showFileResult(processed.first, processed.second)
                 } catch (e: CancellationException) { throw e }
                 catch (e: Exception) { if (gen == fetchGeneration) showFetchError(e) }
                 finally {
-                    rawFile?.takeIf { it != resultFile }?.delete()
-                    processedFile?.takeIf { it != resultFile }?.delete()
+                    rawFile?.takeIf { it != resultFile && it != sourceResponseFile }?.delete()
+                    processedFile?.takeIf { it != resultFile && it != sourceResponseFile }?.delete()
                 }
             }
         }
@@ -1324,46 +1382,53 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun processSubscriptionFile(raw: File, url: String?, headers: Map<String, List<String>>, onOutput: (File) -> Unit): Pair<File, String?> {
-        val jsonToUri = prefs.getBoolean("process_manual", true)
-        val tryBase64 = prefs.getBoolean("process_b64_manual", true)
-        val xrayToSb = prefs.getBoolean("process_xray_manual", false)
+        val format = SubscriptionFormat.read(prefs)
+        val decode = prefs.getBoolean("process_b64_manual", true)
         return withContext(Dispatchers.Default) {
             val processingContext = coroutineContext
             SubscriptionFiles.processingMutex.withLock {
+                var plaintextFile: File? = null
                 try {
-                    if (raw.length() > SubscriptionFiles.MAX_PROCESS_BYTES) {
-                        val encrypted = headers.keys.any { it.equals("Encrypt-Tag", true) }
-                        if (!jsonToUri || encrypted) return@withLock raw to getString(R.string.msg_file_raw_large)
-                        val file = newSubscriptionFile().also(onOutput)
-                        val skipped = try { SubscriptionFiles.convertJsonFile(raw, file, xrayToSb) { processingContext.ensureActive() } }
-                        catch (e: Exception) { file.delete(); throw e }
-                        val note = if (skipped > 0) resources.getQuantityString(R.plurals.msg_xray_skipped, skipped, skipped) else null
-                        return@withLock file to note
-                    }
-                    val body = raw.readText(Charsets.UTF_8)
-                    val decrypted = HappCrypto.process(url, body, headers)
-                    val plaintext = when (decrypted) {
-                        is HappCrypto.Result.Success -> decrypted.plaintext
-                        else -> body
-                    }
-                    val stats = LinkConverter.convertWithStats(plaintext, jsonToUri, tryBase64, xrayToSb)
-                    val file = newSubscriptionFile().also(onOutput)
-                    try { file.writeText(stats.text, Charsets.UTF_8) }
-                    catch (e: Exception) { file.delete(); throw e }
                     val notes = mutableListOf<String>()
-                    if (decrypted is HappCrypto.Result.Success) notes += getString(R.string.msg_decrypted)
-                    if (decrypted is HappCrypto.Result.Failed) notes += getString(R.string.toast_decrypt_failed, decrypted.keyName, decrypted.reason)
-                    if (stats.xraySkipped > 0) notes += resources.getQuantityString(R.plurals.msg_xray_skipped, stats.xraySkipped, stats.xraySkipped)
+                    var input = raw
+                    if (headers.keys.any { it.equals("Encrypt-Tag", true) }) {
+                        require(raw.length() <= SubscriptionFiles.MAX_PROCESS_BYTES) { getString(R.string.msg_file_raw_large) }
+                        when (val result = HappCrypto.process(url, raw.readText(), headers)) {
+                            is HappCrypto.Result.Success -> {
+                                input = File.createTempFile("plaintext-", ".txt", raw.parentFile).also { plaintextFile = it }
+                                input.writeText(result.plaintext)
+                                notes += getString(R.string.msg_decrypted)
+                            }
+                            is HappCrypto.Result.Failed -> throw java.io.IOException(getString(R.string.toast_decrypt_failed, result.keyName, result.reason))
+                            HappCrypto.Result.NotEncrypted -> Unit
+                        }
+                    }
+                    val result = SubscriptionOutput.process(input, format, decode,
+                        { newSubscriptionFile().also(onOutput) }, { processingContext.ensureActive() })
+                    var file = result.file
+                    if (file == plaintextFile) {
+                        file = newSubscriptionFile().also(onOutput)
+                        result.file.inputStream().use { source -> file.outputStream().use { SubscriptionFiles.copyCapped(source, it) } }
+                    }
+                    if (result.fromLinks) notes += getString(R.string.msg_json_from_links)
+                    if (result.skipped > 0) notes += resources.getQuantityString(R.plurals.msg_xray_skipped, result.skipped, result.skipped)
                     file to notes.joinToString("\n").takeIf { it.isNotEmpty() }
                 } catch (e: CancellationException) { throw e }
-                catch (_: Exception) { raw to getString(R.string.msg_file_raw_failed) }
+                catch (e: Exception) { raw to (getString(R.string.msg_file_raw_failed) + "\n" + (e.message ?: e.javaClass.simpleName)) }
+                finally { plaintextFile?.delete() }
             }
         }
+    }
+
+    private fun updateOutputFormatButton() {
+        val formats = resources.getStringArray(R.array.subscription_output_formats)
+        findViewById<Button>(R.id.btnOutputFormat).text = getString(R.string.output_format_selected, formats[SubscriptionFormat.read(prefs).ordinal])
     }
 
     private suspend fun showFileResult(file: File, note: String?) {
         val preview = withContext(Dispatchers.IO) { SubscriptionFiles.preview(file) }
         resultFile = file
+        resultFormat = SubscriptionFormat.read(prefs)
         renderFilePreview(file, preview, note)
     }
 
@@ -1643,6 +1708,7 @@ class MainActivity : AppCompatActivity() {
     // Redraw the UI for the current mode (Xposed / LSPatch / plain)
     private fun updateUiState() {
         val prefs = getSafePrefs(this)
+        if (sourceResponseFile != null && resultFormat != null && resultFormat != SubscriptionFormat.read(prefs) && activeFetchJob?.isActive != true) reprocessCurrentSource()
         val lspatchMode = prefs.getBoolean("lspatch_mode", false)
         val moduleActive = ModuleStatus.isModuleActive()
         val isFullActive = moduleActive || lspatchMode
@@ -1652,9 +1718,8 @@ class MainActivity : AppCompatActivity() {
         val isInterceptionEnabled = prefs.getBoolean("intercept_enabled", false)
         islandIntercept.visibility = if (isInterceptionEnabled && isFullActive) View.VISIBLE else View.GONE
 
-        findViewById<ImageButton>(R.id.btnEditHwidManual).setImageResource(
-            if (isFullActive) R.drawable.ic_edit else R.drawable.ic_paste
-        )
+        findViewById<ImageButton>(R.id.btnEditHwidManual).setImageResource(R.drawable.ic_edit)
+        updateOutputFormatButton()
 
         val activeProfile = DeviceProfiles.active(this)
         val isInputEnabled = prefs.getBoolean("use_custom_hwid_input", false)

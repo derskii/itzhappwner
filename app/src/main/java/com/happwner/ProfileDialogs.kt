@@ -17,7 +17,7 @@ object ProfileDialogs {
     fun showPicker(a: Activity, changed: () -> Unit) {
         val profiles=DeviceProfiles.all(a)
         val labels=listOf(t(a,"Редактировать текущий / создать свой","Edit current / create custom")) +
-            profiles.map { DeviceProfiles.title(a,it) } + t(a,"Выключить профиль","Disable profile")
+            profiles.map { DeviceProfiles.title(a,it) + if(it.hwid.isNotEmpty()) " · HWID …${it.hwid.takeLast(8)}" else "" } + t(a,"Выключить профиль","Disable profile")
         val picker=AnimatedDialogBuilder(a).setTitle(a.getString(R.string.device_profile_choose))
         picker.setItems(labels.toTypedArray()) { _, index ->
                 when(index) {
@@ -98,7 +98,7 @@ object ProfileDialogs {
                 .setPositiveButton(a.getString(android.R.string.ok)) { _, _ -> hwid.setText(DeviceProfiles.generateHwid(formats[format.selectedItemPosition])) }
                 .setNegativeButton(a.getString(android.R.string.cancel),null).showAnimated()
         }
-        val custom=p.id.startsWith("custom_")
+        val custom=DeviceProfiles.isSaved(a,p.id)
         val dialog=AnimatedDialogBuilder(a).setTitle(t(a,"Профиль запроса","Request profile")).setView(root)
             .setPositiveButton(t(a,"Сохранить и применить","Save and apply"),null)
             .setNegativeButton(a.getString(android.R.string.cancel),null)
@@ -120,5 +120,35 @@ object ProfileDialogs {
             }
         }
         preview()
+    }
+
+    fun showHwidEditor(a: Activity, changed: () -> Unit) {
+        val profile = DeviceProfiles.active(a)
+        val root = LinearLayout(a).apply {
+            orientation = LinearLayout.VERTICAL
+            val padding = (24 * resources.displayMetrics.density).toInt()
+            setPadding(padding, 0, padding, 0)
+        }
+        val layout = TextInputLayout(a).apply { hint = "HWID" }
+        val edit = TextInputEditText(a).apply {
+            setSingleLine(true)
+            setText(DeviceProfiles.currentIdentity(a).hwid)
+        }
+        layout.addView(edit); root.addView(layout)
+        root.addView(Button(a).apply {
+            text = t(a, "Сгенерировать новый HWID", "Generate new HWID")
+            setOnClickListener { edit.setText(DeviceProfiles.generateHwid(profile?.hwidFormat ?: "hex16")) }
+        })
+        val dialog = AnimatedDialogBuilder(a)
+            .setTitle(t(a, "Изменить HWID", "Edit HWID"))
+            .setView(root)
+            .setPositiveButton(t(a, "Сохранить", "Save"), null)
+            .setNegativeButton(a.getString(android.R.string.cancel), null).showAnimated()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            try {
+                DeviceProfiles.updateHwid(a, edit.text.toString())
+                changed(); dialog.dismiss()
+            } catch (e: Exception) { layout.error = e.message }
+        }
     }
 }

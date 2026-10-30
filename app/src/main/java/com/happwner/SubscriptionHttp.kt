@@ -83,6 +83,7 @@ object SubscriptionHttp {
                     conn.requestMethod = "GET"
                     conn.connectTimeout = TIMEOUT_MS
                     conn.readTimeout = TIMEOUT_MS
+                    conn.setRequestProperty("Accept", "application/json, text/plain;q=0.9, */*;q=0.1")
                     requestHeaders.forEach { (name, value) -> conn.setRequestProperty(name, value) }
 
                     val status = conn.responseCode

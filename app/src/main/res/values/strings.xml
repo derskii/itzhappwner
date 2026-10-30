@@ -216,4 +216,7 @@ The Xray core\'s <tt>geosite:</tt> and <tt>geoip:</tt> rules are converted into 
     <string name="msg_file_raw_large">Original subscription saved in full. Too large for conversion; export it to a file. Encrypted data remains encrypted.</string>
     <string name="msg_file_raw_failed">Conversion failed. The complete original response is available for saving.</string>
     <string name="msg_file_preview">Preview only. The file contains the complete result.</string>
+    <string name="output_format_title">Output format</string>
+    <string name="output_format_selected">Format: %1$s</string>
+    <string name="msg_json_from_links">The server returned links. JSON was generated from those links; original server DNS and routing are unavailable. The original link is included in each profile.</string>
 </resources>

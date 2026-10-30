@@ -1,4 +1,4 @@
-> **Форк derskii — 1.3.3-api102.** Работа с большими подписками: обработка JSON по одному конфигу, импорт и сохранение в файл, ограниченный предпросмотр и защита буфера обмена. [Скачать APK](https://github.com/derskii/itzhappwner/releases/latest) · [Изменения и границы обработки](docs/releases/v1.3.3-api102.md) · [Сборка](docs/RELEASING.md).
+> **Форк derskii — 1.3.4-api102.** Работа с большими подписками: обработка JSON по одному конфигу, импорт и сохранение в файл, ограниченный предпросмотр и защита буфера обмена. [Скачать APK](https://github.com/derskii/itzhappwner/releases/latest) · [Изменения и границы обработки](docs/releases/v1.3.4-api102.md) · [Сборка](docs/RELEASING.md).
 >
 > Авторы оригинала: **Omegaplex**, **slavrom21**; исходный проект: [Omegaplexx/Happwner](https://github.com/Omegaplexx/Happwner). Условия некоммерческого использования сохранены.
 

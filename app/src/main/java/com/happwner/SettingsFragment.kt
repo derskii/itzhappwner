@@ -887,8 +887,17 @@ class SettingsFragment : Fragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_process_response, null)
         val checkManual = dialogView.findViewById<com.google.android.material.checkbox.MaterialCheckBox>(R.id.checkProcessManual)
         val checkServer = dialogView.findViewById<com.google.android.material.checkbox.MaterialCheckBox>(R.id.checkProcessServer)
-        checkManual.isChecked = prefs.getBoolean("process_manual", true)
+        checkManual.isChecked = prefs.getBoolean("process_manual", false)
         checkServer.isChecked = prefs.getBoolean("process_server", false)
+
+        fun store(bridge: Boolean, enabled: Boolean) {
+            if (enabled) SubscriptionFormat.save(prefs, SubscriptionFormat.URI, bridge)
+            else if (SubscriptionFormat.read(prefs, bridge) == SubscriptionFormat.URI) SubscriptionFormat.save(prefs, SubscriptionFormat.JSON, bridge)
+            else prefs.edit().putBoolean("process_" + if (bridge) "server" else "manual", false).apply()
+            PrefsManager.fixSharedPrefs(ctx)
+        }
+        checkManual.setOnCheckedChangeListener { _, checked -> store(false, checked) }
+        checkServer.setOnCheckedChangeListener { _, checked -> store(true, checked) }
 
         val dialog = AnimatedDialogBuilder(act)
             .setTitle(fromHtml(getString(R.string.setting_process_json)))
@@ -922,7 +931,14 @@ class SettingsFragment : Fragment() {
         val checkManual = dialogView.findViewById<com.google.android.material.checkbox.MaterialCheckBox>(R.id.checkProcessManual)
         val checkServer = dialogView.findViewById<com.google.android.material.checkbox.MaterialCheckBox>(R.id.checkProcessServer)
         checkManual.isChecked = prefs.getBoolean("process_b64_manual", true)
-        checkServer.isChecked = prefs.getBoolean("process_b64_server", false)
+        checkServer.isChecked = prefs.getBoolean("process_b64_server", true)
+
+        fun store(bridge: Boolean, enabled: Boolean) {
+            prefs.edit().putBoolean(if (bridge) "process_b64_server" else "process_b64_manual", enabled).apply()
+            PrefsManager.fixSharedPrefs(ctx)
+        }
+        checkManual.setOnCheckedChangeListener { _, checked -> store(false, checked) }
+        checkServer.setOnCheckedChangeListener { _, checked -> store(true, checked) }
 
         val dialog = AnimatedDialogBuilder(act)
             .setTitle(fromHtml(getString(R.string.setting_process_b64)))
@@ -961,6 +977,15 @@ class SettingsFragment : Fragment() {
 
         checkManual.isChecked = prefs.getBoolean("process_xray_manual", false)
         checkServer.isChecked = prefs.getBoolean("process_xray_server", false)
+
+        fun store(bridge: Boolean, enabled: Boolean) {
+            if (enabled) SubscriptionFormat.save(prefs, SubscriptionFormat.SING_BOX, bridge)
+            else if (SubscriptionFormat.read(prefs, bridge) == SubscriptionFormat.SING_BOX) SubscriptionFormat.save(prefs, SubscriptionFormat.JSON, bridge)
+            else prefs.edit().putBoolean("process_xray_" + if (bridge) "server" else "manual", false).apply()
+            PrefsManager.fixSharedPrefs(ctx)
+        }
+        checkManual.setOnCheckedChangeListener { _, checked -> store(false, checked) }
+        checkServer.setOnCheckedChangeListener { _, checked -> store(true, checked) }
 
         val dialog = AnimatedDialogBuilder(act)
             .setTitle(fromHtml(getString(R.string.setting_process_xray)))

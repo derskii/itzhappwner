@@ -14,8 +14,8 @@ android {
         applicationId = "com.happwner"
         minSdk = 26
         targetSdk = 36
-        versionCode = 8
-        versionName = "1.3.3-api102"
+        versionCode = 9
+        versionName = "1.3.4-api102"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -68,6 +68,7 @@ android {
         buildConfig = true
     }
 
+    testOptions.unitTests.isReturnDefaultValues = true
     testOptions.unitTests.all {
         // The 500-config fixture exceeds this heap size: the test must stream it.
         it.maxHeapSize = "64m"

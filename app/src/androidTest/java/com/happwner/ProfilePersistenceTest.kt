@@ -14,12 +14,12 @@ class ProfilePersistenceTest {
     @Before fun prepare() { PrefsManager.getSafePrefs(context).edit().clear().commit() }
     @After fun clean() { PrefsManager.getSafePrefs(context).edit().clear().commit() }
 
-    @Test fun renameUpdatesByIdAndDuplicateNameCannotOverwriteAnotherRecord() {
+    @Test fun renameUpdatesByIdAndDuplicateNamesKeepSeparateRecords() {
         val a=DeviceProfiles.save(context,DeviceProfiles.Preset(name="A"))
         val b=DeviceProfiles.save(context,DeviceProfiles.Preset(name="B"))
         val renamed=DeviceProfiles.save(context,a.copy(name="C"))
         assertEquals(a.id,renamed.id)
-        assertTrue(runCatching { DeviceProfiles.save(context,renamed.copy(name="B")) }.isFailure)
+        DeviceProfiles.save(context,renamed.copy(name="B"))
         val saved=DeviceProfiles.all(context).filter { it.id.startsWith("custom_") }
         assertEquals(setOf(a.id,b.id),saved.map { it.id }.toSet())
         assertEquals("B",saved.first { it.id==b.id }.name)

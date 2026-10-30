@@ -32,10 +32,11 @@ object SubscriptionFiles {
         return skipped
     }
 
-    fun copyCapped(input: InputStream, output: OutputStream, limit: Long = MAX_DOWNLOAD_BYTES): Long {
+    fun copyCapped(input: InputStream, output: OutputStream, limit: Long = MAX_DOWNLOAD_BYTES, checkActive: () -> Unit = {}): Long {
         val buffer = ByteArray(16 * 1024)
         var total = 0L
         while (true) {
+            checkActive()
             if (Thread.currentThread().isInterrupted) throw java.io.InterruptedIOException()
             val count = input.read(buffer)
             if (count < 0) return total
