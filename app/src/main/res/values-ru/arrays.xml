@@ -24,9 +24,4 @@
         <item>Русский</item>
         <item>English</item>
     </string-array>
-    <string-array name="subscription_output_formats">
-        <item>JSON (исходный / Xray)</item>
-        <item>sing-box JSON</item>
-        <item>URI (vless:// и другие ссылки)</item>
-    </string-array>
 </resources>

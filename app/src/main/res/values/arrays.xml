@@ -31,9 +31,4 @@
         <item>com.v2raytun.android</item>
         <item>llc.itdev.incy</item>
     </string-array>
-    <string-array name="subscription_output_formats">
-        <item>JSON (original / Xray)</item>
-        <item>sing-box JSON</item>
-        <item>URI (vless:// and other links)</item>
-    </string-array>
 </resources>

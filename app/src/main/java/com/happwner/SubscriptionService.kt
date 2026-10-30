@@ -288,8 +288,7 @@ class SubscriptionService : Service() {
                     return@launch
                 }
                 val prefs = PrefsManager.getSafePrefs(this@SubscriptionService)
-                val format = SubscriptionFormat.read(prefs, bridge = true)
-                val tryB64 = prefs.getBoolean("process_b64_server", true)
+                val format = SubscriptionProcessing.read(prefs, bridge = true)
                 val finalFile = SubscriptionFiles.processingMutex.withLock {
                     var input = raw
                     if (response.headers.keys.any { it.equals("Encrypt-Tag", true) }) {
@@ -307,7 +306,7 @@ class SubscriptionService : Service() {
                         }
                     }
                     val processingContext = coroutineContext
-                    SubscriptionOutput.process(input, format, tryB64, {
+                    SubscriptionOutput.process(input, format, {
                         File.createTempFile("bridge-converted-", ".txt", cacheDir).also { convertedFile = it }
                     }, { processingContext.ensureActive() }).file
                 }

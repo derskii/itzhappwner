@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     private var sourceResponseFile: File? = null
     private var sourceResponseUrl: String? = null
     private var sourceResponseHeaders: Map<String, List<String>> = emptyMap()
-    private var resultFormat: SubscriptionFormat? = null
+    private var resultFormat: SubscriptionProcessing? = null
     private var resultFile: File? = null
     private var resultNote: String? = null
     private var pendingExportFile: File? = null
@@ -337,7 +337,7 @@ class MainActivity : AppCompatActivity() {
         sourceResponseFile = restoreSubscriptionFile(savedInstanceState?.getString("source_file"))
         sourceResponseUrl = savedInstanceState?.getString("source_url")
         savedInstanceState?.getString("source_encrypt_tag")?.let { sourceResponseHeaders = mapOf("Encrypt-Tag" to listOf(it)) }
-        resultFormat = savedInstanceState?.getString("result_format")?.let { runCatching { SubscriptionFormat.valueOf(it) }.getOrNull() }
+        resultFormat = savedInstanceState?.takeIf { it.containsKey("result_processing") }?.getInt("result_processing")?.let(SubscriptionProcessing::restore)
         pendingExportFile = restoreSubscriptionFile(savedInstanceState?.getString("export_file"))
         outputWaitLabel = findViewById(R.id.outputWaitLabel)
         // Swallow touches on the result only while the wait label is shown, so the invisible text can't be selected
@@ -378,21 +378,6 @@ class MainActivity : AppCompatActivity() {
         btnEditHwidManual.setOnClickListener {
             ProfileDialogs.showHwidEditor(this) { updateUiState() }
         }
-        findViewById<View>(R.id.btnOutputFormat).setOnClickListener {
-            val formats = SubscriptionFormat.entries
-            val labels = resources.getStringArray(R.array.subscription_output_formats)
-            val chooser = AnimatedDialogBuilder(this)
-            chooser.setTitle(getString(R.string.output_format_title))
-            chooser.setSingleChoiceItems(labels, formats.indexOf(SubscriptionFormat.read(prefs))) { dialog, index ->
-                SubscriptionFormat.save(prefs, formats[index])
-                SubscriptionFormat.save(prefs, formats[index], bridge = true)
-                updateOutputFormatButton()
-                dialog.dismiss()
-                reprocessCurrentSource()
-            }
-            chooser.showAnimated()
-        }
-        updateOutputFormatButton()
         btnEditUaManual.setOnClickListener { showUaSelectDialog() }
 
         val blockEnterFilter = InputFilter { source, _, _, _, _, _ ->
@@ -987,7 +972,7 @@ class MainActivity : AppCompatActivity() {
         sourceResponseFile?.let { outState.putString("source_file", it.name) }
         sourceResponseUrl?.let { outState.putString("source_url", it) }
         sourceResponseHeaders.values.firstOrNull()?.firstOrNull()?.let { outState.putString("source_encrypt_tag", it) }
-        resultFormat?.let { outState.putString("result_format", it.name) }
+        resultFormat?.let { outState.putInt("result_processing", it.encode()) }
         resultFile?.let { outState.putString("result_file", it.name) }
         resultNote?.let { outState.putString("result_note", it) }
         pendingExportFile?.let { outState.putString("export_file", it.name) }
@@ -1383,9 +1368,8 @@ class MainActivity : AppCompatActivity() {
         exportSubscriptionLauncher.launch("Happwner-subscription.$extension")
     }
 
-    private suspend fun processSubscriptionFile(raw: File, url: String?, headers: Map<String, List<String>>, onOutput: (File) -> Unit): Triple<File, String?, SubscriptionFormat> {
-        val format = SubscriptionFormat.read(prefs)
-        val decode = prefs.getBoolean("process_b64_manual", true)
+    private suspend fun processSubscriptionFile(raw: File, url: String?, headers: Map<String, List<String>>, onOutput: (File) -> Unit): Triple<File, String?, SubscriptionProcessing> {
+        val format = SubscriptionProcessing.read(prefs)
         return withContext(Dispatchers.Default) {
             val processingContext = coroutineContext
             SubscriptionFiles.processingMutex.withLock {
@@ -1405,14 +1389,13 @@ class MainActivity : AppCompatActivity() {
                             HappCrypto.Result.NotEncrypted -> Unit
                         }
                     }
-                    val result = SubscriptionOutput.process(input, format, decode,
+                    val result = SubscriptionOutput.process(input, format,
                         { newSubscriptionFile().also(onOutput) }, { processingContext.ensureActive() })
                     var file = result.file
                     if (file == plaintextFile) {
                         file = newSubscriptionFile().also(onOutput)
                         result.file.inputStream().use { source -> file.outputStream().use { SubscriptionFiles.copyCapped(source, it) } }
                     }
-                    if (result.fromLinks) notes += getString(R.string.msg_json_from_links)
                     if (result.skipped > 0) notes += resources.getQuantityString(R.plurals.msg_xray_skipped, result.skipped, result.skipped)
                     Triple(file, notes.joinToString("\n").takeIf { it.isNotEmpty() }, format)
                 } catch (e: CancellationException) { throw e }
@@ -1422,14 +1405,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateOutputFormatButton() {
-        val formats = resources.getStringArray(R.array.subscription_output_formats)
-        findViewById<Button>(R.id.btnOutputFormat).text = getString(R.string.output_format_selected, formats[SubscriptionFormat.read(prefs).ordinal])
-    }
-
-    private suspend fun showFileResult(file: File, note: String?, format: SubscriptionFormat) {
+    private suspend fun showFileResult(file: File, note: String?, format: SubscriptionProcessing) {
         val preview = withContext(Dispatchers.IO) { SubscriptionFiles.preview(file) }
-        if (format != SubscriptionFormat.read(prefs)) {
+        if (format != SubscriptionProcessing.read(prefs)) {
             if (file != sourceResponseFile) file.delete()
             reprocessCurrentSource()
             return
@@ -1715,7 +1693,7 @@ class MainActivity : AppCompatActivity() {
     // Redraw the UI for the current mode (Xposed / LSPatch / plain)
     private fun updateUiState() {
         val prefs = getSafePrefs(this)
-        if (sourceResponseFile != null && resultFormat != null && resultFormat != SubscriptionFormat.read(prefs) && activeFetchJob?.isActive != true) reprocessCurrentSource()
+        if (sourceResponseFile != null && resultFormat != null && resultFormat != SubscriptionProcessing.read(prefs) && activeFetchJob?.isActive != true) reprocessCurrentSource()
         val lspatchMode = prefs.getBoolean("lspatch_mode", false)
         val moduleActive = ModuleStatus.isModuleActive()
         val isFullActive = moduleActive || lspatchMode
@@ -1726,7 +1704,6 @@ class MainActivity : AppCompatActivity() {
         islandIntercept.visibility = if (isInterceptionEnabled && isFullActive) View.VISIBLE else View.GONE
 
         findViewById<ImageButton>(R.id.btnEditHwidManual).setImageResource(R.drawable.ic_edit)
-        updateOutputFormatButton()
 
         val activeProfile = DeviceProfiles.active(this)
         val isInputEnabled = prefs.getBoolean("use_custom_hwid_input", false)

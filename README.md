@@ -1,4 +1,4 @@
-> **derskii fork — 1.3.4-api102.** Large subscription handling with per-config JSON conversion, file import/export, bounded previews and clipboard protection. [Download APK](https://github.com/derskii/itzhappwner/releases/latest) · [Changes and limits](docs/releases/v1.3.4-api102.md) · [Building](docs/RELEASING.md).
+> **derskii fork — 1.3.5-api102.** Large subscription handling with per-config JSON conversion, file import/export, bounded previews and clipboard protection. [Download APK](https://github.com/derskii/itzhappwner/releases/latest) · [Changes and limits](docs/releases/v1.3.5-api102.md) · [Building](docs/RELEASING.md).
 >
 > Original authors: **Omegaplex**, **slavrom21**. Upstream: [Omegaplexx/Happwner](https://github.com/Omegaplexx/Happwner). Original non-commercial terms are retained.
 

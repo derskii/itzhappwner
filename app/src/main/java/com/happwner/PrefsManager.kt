@@ -30,7 +30,7 @@ object PrefsManager {
     private val UNLOCK_PKGS = arrayOf(HAPP_PKG_PRIMARY, HAPP_PKG_SECONDARY, V2RAYTUN_PKG)
 
     fun getSafePrefs(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).also(SubscriptionFormat::ensureDefaults)
+        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
     /** User-approved targets only. Broadcast registration alone cannot grant access. */

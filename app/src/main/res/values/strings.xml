@@ -59,7 +59,7 @@
     <string name="setting_process_json">JSON to URI</string>
     <string name="setting_process_json_desc">Convert received JSON arrays into deeplinks. URI links are less feature-rich than JSON but compatible with virtually any client</string>
     <string name="setting_process_b64">Base64 to text</string>
-    <string name="setting_process_b64_desc">Decode Base64 payloads received from the server JSON and sing-box JSON always decode Base64 automatically.</string>
+    <string name="setting_process_b64_desc">Decode Base64 payloads received from the server.</string>
     <string name="setting_process_xray">Xray to sing-box</string>
     <string name="setting_process_xray_desc">Convert received Xray configs into sing-box format for NekoBox, husi, Hiddify and similar clients</string>
     <string name="setting_header_response_info"><![CDATA[
@@ -216,7 +216,4 @@ The Xray core\'s <tt>geosite:</tt> and <tt>geoip:</tt> rules are converted into 
     <string name="msg_file_raw_large">Original subscription saved in full. Too large for conversion; export it to a file. Encrypted data remains encrypted.</string>
     <string name="msg_file_raw_failed">Conversion failed. The complete original response is available for saving.</string>
     <string name="msg_file_preview">Preview only. The file contains the complete result.</string>
-    <string name="output_format_title">Output format</string>
-    <string name="output_format_selected">Format: %1$s</string>
-    <string name="msg_json_from_links">The server returned links. JSON was generated from those links; original server DNS and routing are unavailable. The original link is included in each profile.</string>
 </resources>

@@ -891,9 +891,7 @@ class SettingsFragment : Fragment() {
         checkServer.isChecked = prefs.getBoolean("process_server", false)
 
         fun store(bridge: Boolean, enabled: Boolean) {
-            if (enabled) SubscriptionFormat.save(prefs, SubscriptionFormat.URI, bridge)
-            else if (SubscriptionFormat.read(prefs, bridge) == SubscriptionFormat.URI) SubscriptionFormat.save(prefs, SubscriptionFormat.JSON, bridge)
-            else prefs.edit().putBoolean("process_" + if (bridge) "server" else "manual", false).apply()
+            prefs.edit().putBoolean("process_" + if (bridge) "server" else "manual", enabled).apply()
             PrefsManager.fixSharedPrefs(ctx)
         }
         checkManual.setOnCheckedChangeListener { _, checked -> store(false, checked) }
@@ -979,9 +977,7 @@ class SettingsFragment : Fragment() {
         checkServer.isChecked = prefs.getBoolean("process_xray_server", false)
 
         fun store(bridge: Boolean, enabled: Boolean) {
-            if (enabled) SubscriptionFormat.save(prefs, SubscriptionFormat.SING_BOX, bridge)
-            else if (SubscriptionFormat.read(prefs, bridge) == SubscriptionFormat.SING_BOX) SubscriptionFormat.save(prefs, SubscriptionFormat.JSON, bridge)
-            else prefs.edit().putBoolean("process_xray_" + if (bridge) "server" else "manual", false).apply()
+            prefs.edit().putBoolean("process_xray_" + if (bridge) "server" else "manual", enabled).apply()
             PrefsManager.fixSharedPrefs(ctx)
         }
         checkManual.setOnCheckedChangeListener { _, checked -> store(false, checked) }

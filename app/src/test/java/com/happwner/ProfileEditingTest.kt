@@ -57,15 +57,19 @@ class ProfileEditingTest {
         assertEquals("keep", headers["X-Test"])
     }
 
-    @Test fun defaultIsJsonAndFormatChoiceIsTheSameForUiAndBridge() {
+    @Test fun openingPreferencesDoesNotResetExistingProcessingChoices() {
         val context = TestPreferencesContext()
-        context.preferences.edit().putBoolean("process_manual", true).commit()
+        context.preferences.edit().putBoolean("process_manual", true)
+            .putBoolean("process_xray_manual", true).putBoolean("process_b64_manual", false)
+            .putBoolean("process_server", false).putBoolean("process_xray_server", false).commit()
         val prefs = PrefsManager.getSafePrefs(context)
-        assertEquals(SubscriptionFormat.JSON, SubscriptionFormat.read(prefs))
-        assertEquals(SubscriptionFormat.JSON, SubscriptionFormat.read(prefs, true))
-        for (bridge in listOf(false, true)) for (format in SubscriptionFormat.entries) {
-            SubscriptionFormat.save(prefs, format, bridge)
-            assertEquals(format, SubscriptionFormat.read(PrefsManager.getSafePrefs(context), bridge))
-        }
+        assertEquals(SubscriptionProcessing(true, false, true), SubscriptionProcessing.read(prefs))
+        assertEquals(SubscriptionProcessing(), SubscriptionProcessing.read(prefs, bridge = true))
+        assertFalse(prefs.contains("json_default_v134"))
+    }
+
+    @Test fun processingSnapshotIncludesBase64AndIndependentConversionFlags() {
+        for (bits in 0..7) assertEquals(bits, SubscriptionProcessing.restore(bits).encode())
+        assertNotEquals(SubscriptionProcessing(), SubscriptionProcessing(decodeBase64 = false))
     }
 }

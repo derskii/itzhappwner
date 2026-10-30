@@ -15,7 +15,7 @@ bash ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug assembleRel
 - `RELEASE_KEY_ALIAS` — alias ключа.
 - `RELEASE_KEY_PASSWORD` — пароль ключа.
 
-Затем запустите workflow **Release APK** вручную с tag `v1.3.4-api102`. Workflow проверяет тесты, lint, собирает release APK, проверяет подпись, добавляет SHA256SUMS.txt и публикует GitHub Release. Ключи и local.properties не входят в репозиторий или артефакты. Сохраните резервную копию ключа для будущих обновлений с той же подписью.
+Затем запустите workflow **Release APK** вручную с tag `v1.3.5-api102`. Workflow проверяет тесты, lint, собирает release APK, проверяет подпись, добавляет SHA256SUMS.txt и публикует GitHub Release. Ключи и local.properties не входят в репозиторий или артефакты. Сохраните резервную копию ключа для будущих обновлений с той же подписью.
 
 Без signing secrets автоматический релиз останавливается с явной ошибкой; обычный CI остаётся доступным.
 

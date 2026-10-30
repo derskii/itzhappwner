@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag
         required: true
-        default: v1.3.4-api102
+        default: v1.3.5-api102
       source_sha:
         description: Source commit with a successful Android CI run
         required: true

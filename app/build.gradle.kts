@@ -14,8 +14,8 @@ android {
         applicationId = "com.happwner"
         minSdk = 26
         targetSdk = 36
-        versionCode = 9
-        versionName = "1.3.4-api102"
+        versionCode = 10
+        versionName = "1.3.5-api102"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
